@@ -2,12 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".", // Base directory for absolute imports
     "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/lib/*": ["src/lib/*"],
-      "@/app/*": ["src/app/*"],
-      "@/context/*": ["src/context/*"],
-      "@/providers/*": ["src/providers/*"],
-      "@/config/*": ["src/config/*"],
+      "@/*": ["./src/*"],
     },
     "target": "ES2020", // Modern JavaScript target
     "lib": ["dom", "dom.iterable", "esnext"], // Libraries to include
