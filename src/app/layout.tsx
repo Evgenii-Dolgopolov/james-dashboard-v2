@@ -5,6 +5,7 @@ import { Layout } from "@/components/index"
 import Providers from "@/providers/Providers"
 import NextAppProviderWrapper from "@/providers/NextAppProviderWrapper"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
+import { Suspense } from "react"
 
 // Load the Inter font with specific weights and subsets
 const inter = Inter({
@@ -25,11 +26,13 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="antialiased">
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          <NextAppProviderWrapper>
-            <Providers>
-              <Layout>{children}</Layout>
-            </Providers>
-          </NextAppProviderWrapper>
+          <Suspense fallback={<div>Loading...</div>}>
+            <NextAppProviderWrapper>
+              <Providers>
+                <Layout>{children}</Layout>
+              </Providers>
+            </NextAppProviderWrapper>
+          </Suspense>
         </AppRouterCacheProvider>
       </body>
     </html>
