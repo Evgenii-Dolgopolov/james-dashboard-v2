@@ -4,7 +4,7 @@ import { Layout } from "@/components/index"
 import Providers from "@/providers/Providers"
 import NextAppProviderWrapper from "@/providers/NextAppProviderWrapper"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
-import "@/styles/globals.css"
+import "./globals.css"
 
 // Load the Inter font with specific weights and subsets
 // const inter = Inter({
