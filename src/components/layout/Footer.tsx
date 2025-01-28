@@ -1,6 +1,6 @@
-import React from "react"
+import { FC } from "react"
 
-const Footer: React.FC = () => {
+const Footer: FC = () => {
   return (
     <footer className="my-auto mx-auto">
       <p className="text-sm">© {new Date().getFullYear()} b2bLead.</p>
@@ -9,4 +9,3 @@ const Footer: React.FC = () => {
 }
 
 export default Footer
-

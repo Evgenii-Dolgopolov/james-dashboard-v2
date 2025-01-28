@@ -5,23 +5,23 @@ import { Box, MenuItem, Select, Typography } from "@mui/material"
 import {
   DataGrid,
   GridRowEditStopReasons,
-  GridRowModes,
+  // GridRowModes,
 } from "@mui/x-data-grid"
-import { DataColumns } from "./DataColumns.jsx"
-import { CustomToolbar } from "./CustomToolbar.jsx"
-import { useChatbotMessages } from "../../../hooks/useChatbotMessages.js"
-import { formatDate } from "../../../utils/utils.js"
+import { DataColumns } from "./DataColumns"
+import { CustomToolbar } from "./CustomToolbar"
+import { useChatbotMessages } from "../../../hooks/useChatbotMessages"
+import { formatDate } from "../../../utils/utils"
 
 const UserDataGrid = () => {
   const { messages, loading, error } = useChatbotMessages()
-  const [rows, setRows] = useState([]) // Initialize rows as an empty array
+  const [rows, setRows] = useState<any[]>([]) // Initialize rows as an empty array
   const [rowModesModel, setRowModesModel] = useState({}) // Define rowModesModel state
   const [timeFilter, setTimeFilter] = useState("all") // State for time filter
 
   // Format the messages and update rows when messages change
   useEffect(() => {
     if (messages) {
-      const formattedMessages = messages.map(message => ({
+      const formattedMessages = messages.map((message: any) => ({
         ...message,
         created_at: formatDate(message.created_at), // Format the created_at field
       }))
@@ -30,12 +30,12 @@ const UserDataGrid = () => {
   }, [messages])
 
   // Handle time filter change
-  const handleTimeFilterChange = event => {
+  const handleTimeFilterChange = (event: any) => {
     setTimeFilter(event.target.value)
   }
 
   // Filter rows based on the selected time filter
-  const filteredRows = rows.filter(row => {
+  const filteredRows = rows.filter((row: any) => {
     const rowDate = new Date(row.created_at)
     const now = new Date()
 
@@ -54,7 +54,7 @@ const UserDataGrid = () => {
   })
 
   // Handle row edit stop
-  const handleRowEditStop = (params, event) => {
+  const handleRowEditStop = (params: any, event: any) => {
     try {
       if (params.reason === GridRowEditStopReasons.rowFocusOut) {
         event.defaultMuiPrevented = true
@@ -65,34 +65,34 @@ const UserDataGrid = () => {
   }
 
   // Handle edit click
-  const handleEditClick = id => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } })
-  }
+  // const handleEditClick = (id: any) => () => {
+  //   setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } })
+  // }
 
   // Handle save click
-  const handleSaveClick = id => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
-  }
+  // const handleSaveClick = (id: any) => () => {
+  //   setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
+  // }
 
   // Handle delete click
-  const handleDeleteClick = id => () => {
-    setRows(rows.filter(row => row.id !== id))
-  }
+  // const handleDeleteClick = (id: any) => () => {
+  //   setRows(rows.filter((row: any) => row.id !== id))
+  // }
 
   // Handle cancel click
-  const handleCancelClick = id => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    })
-    const editedRow = rows.find(row => row.id === id)
-    if (editedRow?.isNew) {
-      setRows(rows.filter(row => row.id !== id))
-    }
-  }
+  // const handleCancelClick = (id: any) => () => {
+  //   setRowModesModel({
+  //     ...rowModesModel,
+  //     [id]: { mode: GridRowModes.View, ignoreModifications: true },
+  //   })
+  //   const editedRow = rows.find((row: any) => row.id === id)
+  //   if ((editedRow as any)?.isNew) {
+  //     setRows(rows.filter((row: any) => row.id !== id))
+  //   }
+  // }
 
   // Process row updates
-  const processRowUpdate = newRow => {
+  const processRowUpdate = (newRow: any) => {
     const updatedMessages = rows.map(row =>
       row.id === newRow.id ? newRow : row,
     )
@@ -102,11 +102,11 @@ const UserDataGrid = () => {
 
   // Define columns using DataColumns
   const columns = DataColumns(
-    rowModesModel,
-    handleSaveClick,
-    handleCancelClick,
-    handleEditClick,
-    handleDeleteClick,
+    // rowModesModel,
+    // handleSaveClick,
+    // handleCancelClick,
+    // handleEditClick,
+    // handleDeleteClick,
   )
 
   // Loading state

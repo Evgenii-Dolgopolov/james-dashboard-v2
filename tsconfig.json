@@ -1,50 +1,40 @@
 {
   "compilerOptions": {
-    "baseUrl": ".", // Base directory for absolute imports
-    "paths": {
-      "@/components/*": ["src/components/*"],
-      "@/lib/*": ["src/lib/*"],
-      "@/app/*": ["src/app/*"],
-      "@/context/*": ["src/context/*"],
-      "@/providers/*": ["src/providers/*"],
-      "@/config/*": ["src/config/*"],
-    },
-    "target": "ES2020", // Modern JavaScript target
-    "lib": ["dom", "dom.iterable", "esnext"], // Libraries to include
-    "allowJs": true, // Allow JavaScript files to be compiled
-    "skipLibCheck": true, // Skip type checking of declaration files
-    "strict": true, // Enable all strict type-checking options
-    "noEmit": true, // Do not emit JavaScript files (Next.js handles this)
-    "esModuleInterop": true, // Enable ES module interop
-    "module": "esnext", // Use ES modules
-    "moduleResolution": "node", // Use Node.js-style module resolution
-    "resolveJsonModule": true, // Allow importing JSON files
-    "isolatedModules": true, // Ensure each file can be transpiled independently
-    "jsx": "preserve", // Preserve JSX syntax (Next.js handles this)
-    "incremental": true, // Enable incremental compilation
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
     "plugins": [
       {
-        "name": "next" // Next.js TypeScript plugin
+        "name": "next"
       }
     ],
-    "allowSyntheticDefaultImports": true, // Allow synthetic default imports
-    "forceConsistentCasingInFileNames": true, // Ensure consistent casing in file names
-    "noUnusedLocals": true, // Report unused local variables
-    "noUnusedParameters": true, // Report unused function parameters
-    "noImplicitReturns": true, // Report implicit returns
-    "noFallthroughCasesInSwitch": true // Report fallthrough cases in switch statements
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
-    "next-env.d.ts", // Next.js type definitions
-    "**/*.ts", // Include all TypeScript files
-    "**/*.js", // Include all TypeScript files
-    "**/*.jsx", // Include all TypeScript files
-    "**/*.tsx", // Include all TypeScript JSX files
-    ".next/types/**/*.ts", // Include Next.js generated types
-    "src/components/dashboard/users/UserDataGrid.jsx", // Include specific JSX file
-    "src/app/api/auth/[...nextauth]/route.ts" // Include NextAuth route
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules" // Exclude node_modules directory
+    "node_modules"
   ]
 }

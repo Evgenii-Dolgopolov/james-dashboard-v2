@@ -1,10 +1,10 @@
-const formatDate = dateString => {
+const formatDate = (dateString: string) => {
   if (!dateString) {
     return "" // Return empty string if the date is invalid or empty
   }
 
   const date = new Date(dateString)
-  if (date instanceof Date && !isNaN(date)) {
+  if (date instanceof Date) {
     const year = date.getUTCFullYear()
     const month = String(date.getUTCMonth() + 1).padStart(2, "0") // Months are 0-indexed
     const day = String(date.getUTCDate()).padStart(2, "0")

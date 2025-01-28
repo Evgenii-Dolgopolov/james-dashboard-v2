@@ -1,7 +1,7 @@
-import React from "react"
-import { UserDataGrid } from "@/components/index.js"
+import { UserDataGrid } from "@/components/index"
+import { FC } from "react"
 
-const DashboardPage: React.FC = () => {
+const DashboardPage: FC = () => {
   return <UserDataGrid />
 }
 

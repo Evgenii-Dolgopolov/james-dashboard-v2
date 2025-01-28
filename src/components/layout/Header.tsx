@@ -1,14 +1,15 @@
 "use client"
-import React from "react"
-import { useRouter } from "next/navigation"
+
 import AppBar from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
-import Toolbar from "@mui/material/Toolbar"
-import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import IconButton from "@mui/material/IconButton"
+import Toolbar from "@mui/material/Toolbar"
+import Typography from "@mui/material/Typography"
+import { useRouter } from "next/navigation"
+import { FC } from "react"
 
-const Header: React.FC = () => {
+const Header: FC = () => {
 
   const router = useRouter()
 
