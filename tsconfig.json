@@ -37,11 +37,13 @@
   "include": [
     "next-env.d.ts", // Next.js type definitions
     "**/*.ts", // Include all TypeScript files
+    "**/*.js", // Include all TypeScript files
     "**/*.tsx", // Include all TypeScript JSX files
+    "**/*.jsx", // Include all TypeScript JSX files
     ".next/types/**/*.ts", // Include Next.js generated types
     "src/components/dashboard/users/UserDataGrid.jsx", // Include specific JSX file
     "src/app/api/auth/[...nextauth]/route.ts" // Include NextAuth route
-  ],
+, "src/components/index.js"  ],
   "exclude": [
     "node_modules" // Exclude node_modules directory
   ]
