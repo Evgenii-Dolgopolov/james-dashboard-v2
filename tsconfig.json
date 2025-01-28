@@ -37,6 +37,8 @@
   "include": [
     "next-env.d.ts", // Next.js type definitions
     "**/*.ts", // Include all TypeScript files
+    "**/*.js", // Include all TypeScript files
+    "**/*.jsx", // Include all TypeScript files
     "**/*.tsx", // Include all TypeScript JSX files
     ".next/types/**/*.ts", // Include Next.js generated types
     "src/components/dashboard/users/UserDataGrid.jsx", // Include specific JSX file
