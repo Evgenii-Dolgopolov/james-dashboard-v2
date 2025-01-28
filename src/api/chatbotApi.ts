@@ -16,7 +16,7 @@ const supabase = axios.create({
 export const fetchChatbotMessages = async () => {
   try {
     // Construct the full URL for debugging
-    const fullUrl = `${SUPABASE_URL}/rest/v1/chatbot?select=*`
+    // const fullUrl = `${SUPABASE_URL}/rest/v1/chatbot?select=*`
 
     // Query the "chatbot" table
     const response = await supabase.get("/chatbot", {

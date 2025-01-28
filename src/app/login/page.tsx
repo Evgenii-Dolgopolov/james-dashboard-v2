@@ -1,7 +1,7 @@
-import React from "react"
 import { LoginForm } from "@/components/index"
+import { FC } from "react"
 
-const LoginPage: React.FC = () => {
+const LoginPage: FC = () => {
   return <LoginForm />
 }
 

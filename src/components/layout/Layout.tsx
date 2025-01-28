@@ -1,9 +1,10 @@
 "use client"
-import React from "react"
-import { Header, Footer } from "@/components/index"
-import { LayoutProps } from "src/types/layout"
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+import { Footer, Header } from "@/components/index"
+import { FC } from "react"
+import { LayoutProps } from "@/types/layout"
+
+const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <div className="flex flex-col min-w-fit mx-auto">
       <Header />
