@@ -8,39 +8,39 @@ const NAVIGATION = [
   {
     segment: "dashboard/users",
     title: "User Dashboard",
-    icon: <DashboardIcon />,
+    icon: DashboardIcon,
   },
   {
     segment: "dashboard",
     title: "Analytics Dashboard",
-    icon: <LayersIcon />,
+    icon: LayersIcon,
     children: [
       {
         segment: "sales",
         title: "Sales",
-        icon: <DescriptionIcon />,
+        icon: DescriptionIcon,
       },
       {
         segment: "traffic",
         title: "Traffic",
-        icon: <DescriptionIcon />,
+        icon: DescriptionIcon,
       },
     ],
   },
   {
     segment: "dashboard",
     title: "Statistics Dashboard",
-    icon: <LayersIcon />,
+    icon: LayersIcon,
     children: [
       {
         segment: "chart",
         title: "Chart",
-        icon: <BarChartIcon />,
+        icon: BarChartIcon,
       },
       {
         segment: "stats",
         title: "Stats",
-        icon: <BarChartIcon />,
+        icon: BarChartIcon,
       },
     ],
   },
