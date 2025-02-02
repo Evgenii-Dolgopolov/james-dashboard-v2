@@ -37,7 +37,6 @@ const UserDataGrid = () => {
 
   // Filter rows based on the selected time filter
   const filteredRows = filterRowsByTime(rows, timeFilter)
-  console.log(timeFilter)
 
   if (loading) {
     return <LoadingState />
