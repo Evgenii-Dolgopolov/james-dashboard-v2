@@ -3,7 +3,7 @@ import { supabase } from "../utils/supabaseClient"
 // Fetch chatbot messages from Supabase
 export const fetchChatbotMessages = async () => {
   try {
-    let allData = []
+    let allData: any = []
     let start = 0
     const batchSize = 1000 // Number of rows to fetch per request
 
@@ -54,10 +54,30 @@ export const fetchChatbotMessages = async () => {
       acc[threadId].push(message)
       return acc
     }, {})
-    
+
     return groupedData
   } catch (error) {
     console.error("Error fetching chatbot messages:", error)
+    throw error
+  }
+}
+
+// Fetch unique bot names from Supabase
+export const fetchBotNames = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("client_table")
+      .select("bot_name")
+      .not("bot_name", "is", null)
+      .order("bot_name", { ascending: true })
+
+    if (error) throw error
+
+    // Extract unique bot names
+    const uniqueBotNames = [...new Set(data.map(item => item.bot_name))]
+    return uniqueBotNames
+  } catch (error) {
+    console.error("Error fetching bot names:", error)
     throw error
   }
 }
