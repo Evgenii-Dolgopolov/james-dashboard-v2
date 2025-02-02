@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ReactNode, Suspense } from 'react';
 import { Layout } from "@/components/index"
-import Providers from "@/providers/Providers"
 import NextAppProviderWrapper from "@/providers/NextAppProviderWrapper"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
+import ChatbotProvider from "@/providers/ChatbotProvider"
 
 import "../styles/globals.css"
 
@@ -29,9 +29,9 @@ export default function RootLayout({
         <Suspense fallback={<div>Loading...</div>}>
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <NextAppProviderWrapper>
-              <Providers>
+              <ChatbotProvider>
                 <Layout>{children}</Layout>
-              </Providers>
+              </ChatbotProvider>
             </NextAppProviderWrapper>
           </AppRouterCacheProvider>
         </Suspense>
