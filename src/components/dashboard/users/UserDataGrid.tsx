@@ -8,31 +8,50 @@ import { CustomToolbar } from "./CustomToolbar"
 import { useChatbotMessages } from "../../../hooks/useChatbotMessages"
 import { formatDate, filterRowsByTime } from "../../../utils/utils"
 import { LoadingState, ErrorState, EmptyState } from "./DataGridStates"
-import { fetchBotNames } from "../../../services/fetchChatbotMessages" // Import fetchBotNames
+import { fetchBotNames, fetchChatbotMessages } from "../../../services/fetchChatbotMessages"
 
 const UserDataGrid = () => {
-  const { messages, loading, error } = useChatbotMessages()
+  const [messages, setMessages] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string|null>(null)
   const [rows, setRows] = useState<any[]>([])
   const [rowModesModel, setRowModesModel] = useState({})
   const [timeFilter, setTimeFilter] = useState("all")
-  const [botNames, setBotNames] = useState<string[]>([]) // State for bot names
-  const [botFilter, setBotFilter] = useState("all") // State for bot filter
+  const [botOptions, setBotOptions] = useState<{name: string, id: string}[]>([])
+  const [selectedBotId, setSelectedBotId] = useState<string>("all")
 
-  // Fetch bot names when the component mounts
+  // Fetch bot options
   useEffect(() => {
-    const loadBotNames = async () => {
+    const loadBotOptions = async () => {
       try {
-        const names = await fetchBotNames() // Fetch bot names
-        setBotNames(names)
-      } catch (error) {
-        console.error("Failed to load bot names:", error)
+        const bots = await fetchBotNames()
+        setBotOptions(bots.map(b => ({ name: b.bot_name, id: b.bot_id })))
+      } catch (err) {
+        console.error("Failed to load bots:", err)
       }
     }
-
-    loadBotNames()
+    loadBotOptions()
   }, [])
 
-  // Format the messages and update rows when messages change
+  // Fetch messages based on selected bot
+  useEffect(() => {
+    const loadMessages = async () => {
+      setLoading(true)
+      try {
+        const data = await fetchChatbotMessages(selectedBotId === "all" ? undefined : selectedBotId)
+        setMessages(data)
+        setError(null)
+      } catch (err) {
+        console.error("Failed to load messages:", err)
+        setError("Failed to load messages")
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadMessages()
+  }, [selectedBotId])
+
+  // Format messages into rows
   useEffect(() => {
     if (messages) {
       const formattedMessages = Object.values(messages)
@@ -40,86 +59,28 @@ const UserDataGrid = () => {
         .map((message: any) => ({
           ...message,
           created_at: formatDate(message.created_at),
+          // Map bot_id to bot_name using our botOptions
+          bot_name: botOptions.find(b => b.id === message.bot_id)?.name || message.bot_id
         }))
-
       setRows(formattedMessages)
     }
-  }, [messages])
+  }, [messages, botOptions])
 
-  // Handle time filter change
-  const handleTimeFilterChange = (event: any) => {
-    setTimeFilter(event.target.value)
-  }
+  // Filter logic
+  const filteredRows = filterRowsByTime(rows, timeFilter)
 
-  // Handle bot filter change
-  const handleBotFilterChange = (event: any) => {
-    setBotFilter(event.target.value)
-  }
+  // Render states
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState error={error} />
+  if (!messages || messages.length === 0) return <EmptyState />
 
-  // Filter rows based on the selected time and bot filters
-  const filteredRows = rows.filter((row: any) => {
-    // Time filter logic
-    const rowDate = new Date(row.created_at)
-    const now = new Date()
-    let timeCondition = true
-
-    switch (timeFilter) {
-      case "today":
-        timeCondition = rowDate.toDateString() === now.toDateString()
-        break
-      case "thisWeek":
-        const startOfWeek = new Date(now)
-        startOfWeek.setDate(now.getDate() - 7)
-        timeCondition = rowDate >= startOfWeek
-        break
-      case "last30Days":
-        const startOf30Days = new Date(now)
-        startOf30Days.setDate(now.getDate() - 30)
-        timeCondition = rowDate >= startOf30Days
-        break
-      default:
-        timeCondition = true
-    }
-
-    // Bot filter logic
-    const botCondition = botFilter === "all" || row.bot_name === botFilter
-
-    return timeCondition && botCondition
-  })
-
-  if (loading) {
-    return <LoadingState />
-  }
-
-  if (error) {
-    return <ErrorState error={error} />
-  }
-
-  if (!messages || messages.length === 0) {
-    return <EmptyState />
-  }
-
-  // Render the DataGrid
   return (
-    <Box
-      sx={{
-        height: "auto",
-        minHeight: 500,
-        width: "95%",
-        "& .actions": {
-          color: "text.secondary",
-        },
-        "& .textPrimary": {
-          color: "text.primary",
-        },
-      }}
-    >
-      {/* Filter Dropdowns */}
-      <Box sx={{ margin: 0, display: "flex", gap: 2, marginBottom: 2 }}>
-        {/* Time Filter Dropdown */}
+    <Box sx={{ height: "auto", minHeight: 500, width: "95%" }}>
+      {/* Filter Controls */}
+      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <Select
           value={timeFilter}
-          onChange={handleTimeFilterChange}
+          onChange={(e) => setTimeFilter(e.target.value)}
           sx={{ minWidth: 150 }}
         >
           <MenuItem value="all">All Time</MenuItem>
@@ -128,31 +89,28 @@ const UserDataGrid = () => {
           <MenuItem value="last30Days">Last 30 Days</MenuItem>
         </Select>
 
-        {/* Bot Filter Dropdown */}
         <Select
-          value={botFilter}
-          onChange={handleBotFilterChange}
-          sx={{ minWidth: 150 }}
+          value={selectedBotId}
+          onChange={(e) => setSelectedBotId(e.target.value)}
+          sx={{ minWidth: 200 }}
         >
           <MenuItem value="all">All Bots</MenuItem>
-          {botNames.map(botName => (
-            <MenuItem key={botName} value={botName}>
-              {botName}
+          {botOptions.map((bot) => (
+            <MenuItem key={bot.id} value={bot.id}>
+              {bot.name}
             </MenuItem>
           ))}
         </Select>
       </Box>
 
-      {/* DataGrid */}
+      {/* Data Grid */}
       <DataGrid
-        rows={filteredRows} // Use filtered rows
+        rows={filteredRows}
         columns={DataColumns()}
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
-        slots={{
-          toolbar: CustomToolbar,
-        }}
+        slots={{ toolbar: CustomToolbar }}
       />
     </Box>
   )

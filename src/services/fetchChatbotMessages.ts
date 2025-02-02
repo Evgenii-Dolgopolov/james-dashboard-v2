@@ -1,36 +1,32 @@
 import { supabase } from "../utils/supabaseClient"
 
-// Fetch chatbot messages from Supabase
-export const fetchChatbotMessages = async () => {
+// Fetch chatbot messages from Supabase with optional bot filter
+export const fetchChatbotMessages = async (selectedBotId?: string) => {
   try {
     let allData: any = []
     let start = 0
-    const batchSize = 1000 // Number of rows to fetch per request
+    const batchSize = 1000
 
     while (true) {
-      // Query the "chatbot" table with pagination
-      const { data: chatbot, error } = await supabase
+      let query = supabase
         .from("chatbot")
         .select(
           "id, created_at, typebot_id, thread_id, user_message, bot_message, user_email",
         )
-        .order("created_at", { ascending: false }) // Sort by most recent first
-        .range(start, start + batchSize - 1) // Fetch rows in batches
+        .order("created_at", { ascending: false })
+        .range(start, start + batchSize - 1)
 
-      // Check for errors
-      if (error) {
-        throw error
+      // Add bot filter if specified
+      if (selectedBotId) {
+        query = query.eq("typebot_id", selectedBotId)
       }
 
-      // If no data is returned, break the loop
-      if (!chatbot || chatbot.length === 0) {
-        break
-      }
+      const { data: chatbot, error } = await query
 
-      // Add the fetched data to the allData array
+      if (error) throw error
+      if (!chatbot || chatbot.length === 0) break
+
       allData = allData.concat(chatbot)
-
-      // Move to the next batch
       start += batchSize
     }
 
@@ -38,7 +34,7 @@ export const fetchChatbotMessages = async () => {
     const transformedData = allData.map(message => ({
       id: message.id,
       created_at: message.created_at,
-      bot_name: message.typebot_id,
+      bot_id: message.typebot_id, // Store the typebot_id as bot_id
       thread_id: message.thread_id,
       user_message: message.user_message,
       bot_message: message.bot_message,
@@ -48,9 +44,7 @@ export const fetchChatbotMessages = async () => {
     // Group data by thread_id
     const groupedData = transformedData.reduce((acc, message) => {
       const threadId = message.thread_id
-      if (!acc[threadId]) {
-        acc[threadId] = []
-      }
+      if (!acc[threadId]) acc[threadId] = []
       acc[threadId].push(message)
       return acc
     }, {})
@@ -62,20 +56,17 @@ export const fetchChatbotMessages = async () => {
   }
 }
 
-// Fetch unique bot names from Supabase
+// Fetch bot names with their IDs from client_table
 export const fetchBotNames = async () => {
   try {
     const { data, error } = await supabase
       .from("client_table")
-      .select("bot_name")
-      .not("bot_name", "is", null)
+      .select("bot_name, bot_id")
+      .not("bot_id", "is", null)
       .order("bot_name", { ascending: true })
 
     if (error) throw error
-
-    // Extract unique bot names
-    const uniqueBotNames = [...new Set(data.map(item => item.bot_name))]
-    return uniqueBotNames
+    return data
   } catch (error) {
     console.error("Error fetching bot names:", error)
     throw error
