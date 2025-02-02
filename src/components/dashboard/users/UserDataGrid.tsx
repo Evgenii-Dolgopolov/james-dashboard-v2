@@ -10,7 +10,7 @@ import {
 import { DataColumns } from "./DataColumns"
 import { CustomToolbar } from "./CustomToolbar"
 import { useChatbotMessages } from "../../../hooks/useChatbotMessages"
-import { formatDate } from "../../../utils/utils"
+import { formatDate, filterRowsByTime } from "../../../utils/utils"
 
 const UserDataGrid = () => {
   const { messages, loading, error } = useChatbotMessages()
@@ -36,34 +36,18 @@ const UserDataGrid = () => {
   }
 
   // Filter rows based on the selected time filter
-  const filteredRows = rows.filter((row: any) => {
-    const rowDate = new Date(row.created_at)
-    const now = new Date()
-
-    switch (timeFilter) {
-      case "today":
-        return rowDate.toDateString() === now.toDateString()
-      case "thisWeek":
-        const startOfWeek = new Date(now.setDate(now.getDate() - 7))
-        return rowDate >= startOfWeek
-      case "last30Days":
-        const startOf30Days = new Date(now.setDate(now.getDate() - 30))
-        return rowDate >= startOf30Days
-      default:
-        return true // Show all rows if no filter is selected
-    }
-  })
+  const filteredRows = filterRowsByTime(rows, timeFilter);
 
   // Handle row edit stop
-  const handleRowEditStop = (params: any, event: any) => {
-    try {
-      if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-        event.defaultMuiPrevented = true
-      }
-    } catch (error) {
-      console.error("Error in row edit stop handler:", error)
-    }
-  }
+  // const handleRowEditStop = (params: any, event: any) => {
+  //   try {
+  //     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+  //       event.defaultMuiPrevented = true
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in row edit stop handler:", error)
+  //   }
+  // }
 
   // Handle edit click
   // const handleEditClick = (id: any) => () => {
@@ -183,7 +167,7 @@ const UserDataGrid = () => {
       }}
     >
       {/* Time Filter Dropdown */}
-      <Box sx={{ marginBottom: 2 }}>
+      <Box sx={{ margin: 0 }}>
         <Select
           value={timeFilter}
           onChange={handleTimeFilterChange}
@@ -202,7 +186,7 @@ const UserDataGrid = () => {
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
-        onRowEditStop={handleRowEditStop}
+        // onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         slots={{
           toolbar: CustomToolbar,
