@@ -1,7 +1,7 @@
 "use client"
 
 import { ReactNode, useEffect, useState } from "react"
-import { fetchChatbotMessages } from "../api/chatbotApi"
+import { fetchChatbotMessages } from "../services/fetchChatbotMessages"
 import { ChatbotContext } from "../context/ChatbotContext"
 
 export default function ChatbotProvider({ children }: { children: ReactNode }) {

@@ -21,7 +21,8 @@ const UserDataGrid = () => {
   // Format the messages and update rows when messages change
   useEffect(() => {
     if (messages) {
-      const formattedMessages = messages.map((message: any) => ({
+      console.log(messages)
+      const formattedMessages = Object.values(messages).flat().map((message: any) => ({
         ...message,
         created_at: formatDate(message.created_at), // Format the created_at field
       }))
@@ -172,7 +173,7 @@ const UserDataGrid = () => {
       sx={{
         height: "auto",
         minHeight: 500,
-        width: "98%",
+        width: "95%",
         "& .actions": {
           color: "text.secondary",
         },

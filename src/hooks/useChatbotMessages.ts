@@ -10,6 +10,5 @@ export const useChatbotMessages = () => {
   if (!context) {
     throw new Error("useChatbotMessages must be used within a ChatbotProvider")
   }
-  console.log("ChatbotContext:", context)
   return context
 }
