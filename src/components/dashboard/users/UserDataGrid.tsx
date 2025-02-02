@@ -21,11 +21,11 @@ const UserDataGrid = () => {
   // Format the messages and update rows when messages change
   useEffect(() => {
     if (messages) {
-      console.log(messages)
       const formattedMessages = Object.values(messages).flat().map((message: any) => ({
         ...message,
-        created_at: formatDate(message.created_at), // Format the created_at field
+        created_at: formatDate(message.created_at),
       }))
+      console.log(formattedMessages)
       setRows(formattedMessages)
     }
   }, [messages])
@@ -44,7 +44,7 @@ const UserDataGrid = () => {
       case "today":
         return rowDate.toDateString() === now.toDateString()
       case "thisWeek":
-        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()))
+        const startOfWeek = new Date(now.setDate(now.getDate() - 7))
         return rowDate >= startOfWeek
       case "last30Days":
         const startOf30Days = new Date(now.setDate(now.getDate() - 30))

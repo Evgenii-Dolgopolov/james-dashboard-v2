@@ -12,7 +12,7 @@ export const fetchChatbotMessages = async () => {
       const { data: chatbot, error } = await supabase
         .from("chatbot")
         .select(
-          "id, created_at, typebot_id, thread_id, user_message, bot_message, callback_spare1, callback_spare2",
+          "id, created_at, typebot_id, thread_id, user_message, bot_message, user_email",
         )
         .order("created_at", { ascending: false }) // Sort by most recent first
         .range(start, start + batchSize - 1) // Fetch rows in batches
@@ -42,7 +42,7 @@ export const fetchChatbotMessages = async () => {
       thread_id: message.thread_id,
       user_message: message.user_message,
       bot_message: message.bot_message,
-      callback: message.callback_spare1 || message.callback_spare2,
+      user_email: message.user_email,
     }))
 
     // Group data by thread_id
