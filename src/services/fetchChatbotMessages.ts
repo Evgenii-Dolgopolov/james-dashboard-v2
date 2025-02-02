@@ -55,8 +55,6 @@ export const fetchChatbotMessages = async () => {
       return acc
     }, {})
     
-    
-
     return groupedData
   } catch (error) {
     console.error("Error fetching chatbot messages:", error)

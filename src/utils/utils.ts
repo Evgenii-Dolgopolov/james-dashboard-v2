@@ -18,22 +18,24 @@ export const formatDate = (dateString: string) => {
 }
 
 export const filterRowsByTime = (rows: any[], timeFilter: string) => {
-  const now = new Date();
+  const now = new Date() // Current date and time
 
   return rows.filter((row: any) => {
-    const rowDate = new Date(row.created_at);
+    const rowDate = new Date(row.created_at) // Convert row's created_at to a Date object
 
     switch (timeFilter) {
       case "today":
-        return rowDate.toDateString() === now.toDateString();
+        return rowDate.toDateString() === now.toDateString() // Compare only the date part
       case "thisWeek":
-        const startOfWeek = new Date(now.setDate(now.getDate() - 7));
-        return rowDate >= startOfWeek;
+        const startOfWeek = new Date(now) // Create a new Date object for startOfWeek
+        startOfWeek.setDate(now.getDate() - 7) // Subtract 7 days from the current date
+        return rowDate >= startOfWeek // Check if rowDate is within the last 7 days
       case "last30Days":
-        const startOf30Days = new Date(now.setDate(now.getDate() - 30));
-        return rowDate >= startOf30Days;
+        const startOf30Days = new Date(now) // Create a new Date object for startOf30Days
+        startOf30Days.setDate(now.getDate() - 30) // Subtract 30 days from the current date
+        return rowDate >= startOf30Days // Check if rowDate is within the last 30 days
       default:
-        return true; // Show all rows if no filter is selected
+        return true // Show all rows if no filter is selected
     }
-  });
-};
+  })
+}

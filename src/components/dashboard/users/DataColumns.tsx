@@ -6,13 +6,13 @@
 //   Cancel as CancelIcon,
 // } from "@mui/icons-material"
 
-export const DataColumns = (
+export const DataColumns = () =>
   // rowModesModel,
   // handleSaveClick,
   // handleCancelClick,
   // handleEditClick,
   // handleDeleteClick,
-) => [
+  [
     {
       field: "created_at",
       headerName: "Time",
