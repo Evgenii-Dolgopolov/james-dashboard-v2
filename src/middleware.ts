@@ -1,7 +1,7 @@
 import { auth } from "@/auth"
 import { NextResponse } from "next/server"
 
-export default auth(req => {
+export default auth((req) => {
   const { pathname } = req.nextUrl
 
   // Redirect unauthenticated users to login
