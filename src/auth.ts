@@ -12,22 +12,15 @@ export const authConfig = {
       },
       async authorize(credentials) {
         try {
-          console.log("Auth attempt with email:", credentials?.email)
-
-          // Use Supabase Auth to sign in
           const { data, error } = await supabase.auth.signInWithPassword({
             email: credentials?.email || "",
             password: credentials?.password || "",
           })
 
-          console.log("Supabase auth response:", { data, error })
-
           if (error || !data.user) {
-            console.log("Authentication failed:", error?.message)
             throw new Error(error?.message || "Invalid credentials")
           }
 
-          // Fetch additional user data from public.users
           const { data: userData, error: userError } = await supabase
             .from("users")
             .select("*")
@@ -35,11 +28,9 @@ export const authConfig = {
             .single()
 
           if (userError || !userData) {
-            console.log("User data not found:", userError?.message)
             throw new Error("User data not found")
           }
 
-          console.log("Authentication successful for user:", userData)
           return {
             id: userData.id,
             email: userData.email,
