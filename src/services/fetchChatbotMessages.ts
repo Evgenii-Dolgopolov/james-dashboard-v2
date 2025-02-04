@@ -1,6 +1,5 @@
 import { supabase } from "../utils/supabaseClient"
 
-// Fetch chatbot messages from Supabase with optional bot filter
 export const fetchChatbotMessages = async (selectedBotId?: string) => {
   try {
     let allData: any = []
@@ -13,10 +12,12 @@ export const fetchChatbotMessages = async (selectedBotId?: string) => {
         .select(
           "id, created_at, typebot_id, thread_id, user_message, bot_message, user_email, suggested_message",
         )
+        .or(
+          "user_message.neq.null,suggested_message.neq.null,bot_message.neq.null,user_email.neq.null",
+        )
         .order("created_at", { ascending: false })
         .range(start, start + batchSize - 1)
 
-      // Add bot filter if specified
       if (selectedBotId) {
         query = query.eq("typebot_id", selectedBotId)
       }
@@ -30,11 +31,10 @@ export const fetchChatbotMessages = async (selectedBotId?: string) => {
       start += batchSize
     }
 
-    // Transform data to match the table fields
     const transformedData = allData.map(message => ({
       id: message.id,
       created_at: message.created_at,
-      bot_id: message.typebot_id, // Store the typebot_id as bot_id
+      bot_id: message.typebot_id,
       thread_id: message.thread_id,
       user_message: message.user_message,
       bot_message: message.bot_message,
@@ -42,7 +42,6 @@ export const fetchChatbotMessages = async (selectedBotId?: string) => {
       suggested_question: message.suggested_message,
     }))
 
-    // Group data by thread_id
     const groupedData = transformedData.reduce((acc, message) => {
       const threadId = message.thread_id
       if (!acc[threadId]) acc[threadId] = []
@@ -57,7 +56,6 @@ export const fetchChatbotMessages = async (selectedBotId?: string) => {
   }
 }
 
-// Fetch bot names with their IDs from client_table
 export const fetchBotNames = async () => {
   try {
     const { data, error } = await supabase
