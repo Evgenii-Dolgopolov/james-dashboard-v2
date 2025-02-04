@@ -1,38 +1,33 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { getToken } from "next-auth/jwt"
+import { auth } from "@/auth"
 
-export async function middleware(request: NextRequest) {
+// Combine both authentication checks
+export const middleware = auth(async (request: NextRequest) => {
   const token = await getToken({ req: request })
+  const { pathname } = request.nextUrl
 
   // Define protected routes
   const protectedRoutes = ["/dashboard", "/dashboard/users"]
 
   // Check if the requested path is protected
   const isProtectedRoute = protectedRoutes.some(route =>
-    request.nextUrl.pathname.startsWith(route),
+    pathname.startsWith(route),
   )
 
   // Redirect to login if user is not authenticated and trying to access a protected route
-  if (isProtectedRoute && !token) {
-    const loginUrl = new URL("/login", request.url)
-    return NextResponse.redirect(loginUrl)
+  if (
+    (isProtectedRoute && !token) ||
+    (!request.auth && pathname.startsWith("/dashboard"))
+  ) {
+    return NextResponse.redirect(new URL("/login", request.url))
   }
 
-  // Allow access to non-protected routes or authenticated users
   return NextResponse.next()
-}
+})
 
-// Specify the routes to apply the middleware
+// Unified matcher configuration
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - login page
-     */
-    "/((?!_next/static|_next/image|favicon.ico|login).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|login).*)"],
 }
