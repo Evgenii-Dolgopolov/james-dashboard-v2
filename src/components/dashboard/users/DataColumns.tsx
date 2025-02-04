@@ -43,6 +43,13 @@ export const DataColumns = () =>
       editable: false,
     },
     {
+      field: "suggested_question",
+      headerName: "Suggested Question",
+      flex: 1,
+      minWidth: 150,
+      editable: false,
+    },
+    {
       field: "bot_message",
       headerName: "Bot Message",
       flex: 1,
@@ -52,13 +59,6 @@ export const DataColumns = () =>
     {
       field: "user_email",
       headerName: "Callback",
-      flex: 1,
-      minWidth: 150,
-      editable: false,
-    },
-    {
-      field: "suggested_question",
-      headerName: "Suggested Question",
       flex: 1,
       minWidth: 150,
       editable: false,
