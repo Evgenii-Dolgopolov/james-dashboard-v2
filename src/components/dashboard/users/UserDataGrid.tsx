@@ -85,7 +85,7 @@ const UserDataGrid = () => {
         >
           <MenuItem value="all">All Time</MenuItem>
           <MenuItem value="today">Today</MenuItem>
-          <MenuItem value="thisWeek">This Week</MenuItem>
+          <MenuItem value="thisWeek">Last 7 Days</MenuItem>
           <MenuItem value="last30Days">Last 30 Days</MenuItem>
         </Select>
 

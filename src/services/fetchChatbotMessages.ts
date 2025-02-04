@@ -11,7 +11,7 @@ export const fetchChatbotMessages = async (selectedBotId?: string) => {
       let query = supabase
         .from("chatbot")
         .select(
-          "id, created_at, typebot_id, thread_id, user_message, bot_message, user_email",
+          "id, created_at, typebot_id, thread_id, user_message, bot_message, user_email, suggested_message",
         )
         .order("created_at", { ascending: false })
         .range(start, start + batchSize - 1)
@@ -39,6 +39,7 @@ export const fetchChatbotMessages = async (selectedBotId?: string) => {
       user_message: message.user_message,
       bot_message: message.bot_message,
       user_email: message.user_email,
+      suggested_question: message.suggested_message,
     }))
 
     // Group data by thread_id
