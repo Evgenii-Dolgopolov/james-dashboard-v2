@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { supabase } from "./utils/supabaseClient"
+import { supabase } from "../utils/supabaseClient"
 
 export const authConfig = {
   providers: [
@@ -43,9 +43,7 @@ export const authConfig = {
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   pages: {
     signIn: "/login",
     error: "/login",
@@ -63,5 +61,3 @@ export const authConfig = {
     },
   },
 }
-
-export const { handlers, auth, signIn, signOut } = NextAuth(authConfig)
