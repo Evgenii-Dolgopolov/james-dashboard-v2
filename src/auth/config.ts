@@ -1,3 +1,4 @@
+// src/auth/config.ts
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { supabase } from "../utils/supabaseClient"
@@ -43,21 +44,48 @@ export const authConfig = {
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    // Setting a maximum age for the session
+    maxAge: 24 * 60 * 60, // 24 hours in seconds
+    // Updating session every time it's checked to keep it fresh
+    updateAge: 24 * 60 * 60, // 24 hours in seconds
+  },
   pages: {
     signIn: "/login",
     error: "/login",
+    // Adding signOut page to ensure proper cleanup
+    signOut: "/",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // If this is a sign-in event, add user data to the token
       if (user) {
         token.id = user.id
+        token.email = user.email
       }
+
+      // Handle token updates if needed
+      if (trigger === "update" && session) {
+        // You can update token data here if needed
+        return { ...token, ...session }
+      }
+
       return token
     },
     async session({ session, token }) {
-      session.user.id = token.id
+      // Ensure user data is properly attached to the session
+      if (token && session.user) {
+        session.user.id = token.id
+        // You can add additional user data here if needed
+      }
       return session
     },
+  },
+  // Adding additional security options
+  secret: process.env.NEXTAUTH_SECRET, // Make sure this is set in your environment
+  jwt: {
+    // Maximum age of the JWT token
+    maxAge: 24 * 60 * 60, // 24 hours in seconds
   },
 }

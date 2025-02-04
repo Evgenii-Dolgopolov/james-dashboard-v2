@@ -12,23 +12,31 @@ import { FC } from "react"
 
 const Header: FC = () => {
   const router = useRouter()
-  // Get the session state to check if user is authenticated
   const { data: session, status } = useSession()
 
-  // Handler for protected route navigation
   const handleProtectedNavigation = (path: string) => {
     if (!session) {
-      // If not authenticated, redirect to login and store intended destination
       router.push(`/login?callbackUrl=${encodeURIComponent(path)}`)
     } else {
-      // If authenticated, allow navigation
       router.push(path)
     }
   }
 
-  // Handler for logout
+  // Enhanced logout handler with proper session cleanup
   const handleLogout = async () => {
-    await signOut({ redirect: true, callbackUrl: "/" })
+    try {
+      // SignOut with specific configuration to ensure complete cleanup
+      await signOut({
+        redirect: false, // We'll handle redirect manually
+        callbackUrl: "/",
+      })
+
+      // Force a hard navigation to the home page
+      // This ensures all session data is cleared from memory
+      window.location.href = "/"
+    } catch (error) {
+      console.error("Logout error:", error)
+    }
   }
 
   return (
@@ -50,6 +58,7 @@ const Header: FC = () => {
             <Button
               onClick={() => handleProtectedNavigation("/dashboard/users")}
               color="inherit"
+              disabled={status === "loading"} // Prevent clicks during session check
             >
               Dashboard
             </Button>
@@ -57,11 +66,11 @@ const Header: FC = () => {
             <Button
               onClick={() => handleProtectedNavigation("/charts")}
               color="inherit"
+              disabled={status === "loading"} // Prevent clicks during session check
             >
               Charts
             </Button>
 
-            {/* Conditionally render Login/Logout button based on auth state */}
             {!session ? (
               <Button onClick={() => router.push("/login")} color="inherit">
                 Login
