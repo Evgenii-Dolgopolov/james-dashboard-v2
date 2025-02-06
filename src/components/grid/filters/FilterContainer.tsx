@@ -17,15 +17,12 @@ export const FilterContainer: React.FC<FilterContainerProps> = ({
   onBotChange,
 }) => {
   return (
-    <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+    <Box sx={{ display: "flex", gap: 2 }}>
       <TimeFilter
         timeFilter={timeFilter}
         onTimeFilterChange={onTimeFilterChange}
       />
-      <BotFilter
-        selectedBotId={selectedBotId}
-        onBotChange={onBotChange}
-      />
+      <BotFilter selectedBotId={selectedBotId} onBotChange={onBotChange} />
     </Box>
   )
 }

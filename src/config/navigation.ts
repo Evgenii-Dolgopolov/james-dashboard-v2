@@ -1,9 +1,7 @@
-import React from "react"
-import DashboardIcon from "@mui/icons-material/Dashboard"
+import React, { ReactElement } from "react"
 import MessageIcon from "@mui/icons-material/Message"
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer"
 import PhoneCallbackIcon from "@mui/icons-material/PhoneCallback"
-import { ReactElement } from "react"
 
 type NavigationItem = {
   segment: string

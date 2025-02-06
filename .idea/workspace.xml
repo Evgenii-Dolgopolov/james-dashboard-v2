@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit">
-      <change beforePath="$PROJECT_DIR$/src/components/grid/BotFilterComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/filters/BotFilter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/grid/FilterContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/filters/FilterContainer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/grid/MessagesGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/MessagesGrid.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/grid/TimeFilterComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/filters/TimeFilter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/grid/Toolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/common/Toolbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/navigation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/navigation.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,11 +69,11 @@
       <recent name="$PROJECT_DIR$/src/lib/utils/utils.js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/grid/messages" />
+      <recent name="$PROJECT_DIR$/src/components/grid/common" />
+      <recent name="$PROJECT_DIR$/src/components/grid/filters" />
+      <recent name="$PROJECT_DIR$/src/components/filters" />
       <recent name="$PROJECT_DIR$/src/components/grid" />
-      <recent name="$PROJECT_DIR$/src/app/dashboard" />
-      <recent name="$PROJECT_DIR$/src/app/dashboard/users" />
-      <recent name="$PROJECT_DIR$/src/app/user-list/analitics" />
-      <recent name="$PROJECT_DIR$/src/app/statistics" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -107,7 +103,7 @@
       <workItem from="1738492199438" duration="332000" />
       <workItem from="1738816438201" duration="4715000" />
       <workItem from="1738826387804" duration="2790000" />
-      <workItem from="1738834020382" duration="324000" />
+      <workItem from="1738834020382" duration="995000" />
     </task>
     <task id="LOCAL-00001" summary="feat(ui): add dropdown, calendar, checkbox, inputs">
       <option name="closed" value="true" />
