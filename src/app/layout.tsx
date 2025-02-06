@@ -2,12 +2,11 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ReactNode, Suspense } from "react"
 import { Layout } from "@/components/index"
-import NextAppProviderWrapper from "@/providers/NextAppProviderWrapper"
+import { AppProviders } from "@/providers/AppProviders"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
-import ChatbotProvider from "@/providers/ChatbotProvider"
 import { SessionProvider } from "next-auth/react"
 
-import "../styles/globals.css"
+import "@/styles/globals.css"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,11 +28,9 @@ export default function RootLayout({
         <Suspense fallback={<div>Loading...</div>}>
           <SessionProvider>
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-              <NextAppProviderWrapper>
-                <ChatbotProvider>
-                  <Layout>{children}</Layout>
-                </ChatbotProvider>
-              </NextAppProviderWrapper>
+              <AppProviders>
+                <Layout>{children}</Layout>
+              </AppProviders>
             </AppRouterCacheProvider>
           </SessionProvider>
         </Suspense>

@@ -1,10 +1,9 @@
 "use client"
 
 import { useContext } from "react"
-import { ChatbotContext } from "../context/ChatbotContext"
+import { ChatbotContext } from "@/context/chatbot/ChatbotContext"
 
-// Custom hook to access chatbot messages and state
-export const useChatbotMessages = () => {
+export function useChatbotMessages() {
   const context = useContext(ChatbotContext)
 
   if (!context) {

@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from "react"
 import { Select, MenuItem } from "@mui/material"
-import { fetchBotNames } from "@/services/fetchChatbotMessages"
+import { fetchBotNames, type Bot } from "@/lib/supabase/queries"
 
 type BotFilterProps = {
   selectedBotId: string
   onBotChange: (value: string) => void
 }
 
-type BotOption = {
-  name: string
-  id: string
-}
-
 export const BotFilterComponent: React.FC<BotFilterProps> = ({
   selectedBotId,
   onBotChange,
 }) => {
-  const [botOptions, setBotOptions] = useState<BotOption[]>([])
+  const [botOptions, setBotOptions] = useState<Bot[]>([])
 
   useEffect(() => {
     const loadBotOptions = async () => {
       try {
         const bots = await fetchBotNames()
-        setBotOptions(bots.map(b => ({ name: b.bot_name, id: b.bot_id })))
+        setBotOptions(bots)
       } catch (err) {
         console.error("Failed to load bots:", err)
       }
@@ -38,8 +33,8 @@ export const BotFilterComponent: React.FC<BotFilterProps> = ({
     >
       <MenuItem value="all">All Bots</MenuItem>
       {botOptions.map(bot => (
-        <MenuItem key={bot.id} value={bot.id}>
-          {bot.name}
+        <MenuItem key={bot.bot_id} value={bot.bot_id}>
+          {bot.bot_name}
         </MenuItem>
       ))}
     </Select>

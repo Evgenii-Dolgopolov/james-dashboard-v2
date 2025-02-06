@@ -11,12 +11,12 @@ const NAVIGATION = [
     // icon: <DashboardIcon />,
   },
   {
-    segment: "dashboard/messages",
+    segment: "dashboard/threads",
     title: "Thread View",
     // icon: <DashboardIcon />,
   },
   {
-    segment: "dashboard/messages",
+    segment: "dashboard/callback",
     title: "Callback",
     // icon: <DashboardIcon />,
   },

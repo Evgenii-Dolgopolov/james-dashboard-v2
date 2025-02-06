@@ -1,0 +1,14 @@
+import { Message } from "@/lib/supabase/queries"
+
+export function transformMessages(data: any[]): Message[] {
+  return data.map(message => ({
+    id: message.id,
+    created_at: message.created_at,
+    bot_id: message.typebot_id,
+    thread_id: message.thread_id,
+    user_message: message.user_message,
+    bot_message: message.bot_message,
+    user_email: message.user_email,
+    suggested_question: message.suggested_message,
+  }))
+}

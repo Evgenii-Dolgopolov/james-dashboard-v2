@@ -5,49 +5,86 @@ import { Box } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 import { MessagesColumns } from "./MessagesColumns"
 import { Toolbar } from "./Toolbar"
-import { formatDate, filterRowsByTime } from "@/utils/utils"
+import { formatDate } from "@/utils/formatters"
+import { filterRowsByTime } from "@/utils/filters"
 import { LoadingState, ErrorState, EmptyState } from "./States"
-import { fetchChatbotMessages } from "@/services/fetchChatbotMessages"
+import {
+  fetchChatbotMessages,
+  fetchBotNames,
+  type Message,
+  type Bot,
+} from "@/lib/supabase/queries"
 import { FilterContainer } from "./FilterContainer"
 
-type Message = {
-  id: string
-  created_at: string
-  bot_id: string
-  bot_name: string
-  thread_id: string
-  user_message: string
-  bot_message: string
-  user_email: string
-  suggested_question: string
+type MessagesState = {
+  messages: Record<string, Message[]> | null
+  loading: boolean
+  error: string | null
+  rows: Message[]
+  rowModesModel: Record<string, any>
+  timeFilter: string
+  selectedBotId: string
+  botOptions: Bot[]
+}
+
+const initialState: MessagesState = {
+  messages: null,
+  loading: true,
+  error: null,
+  rows: [],
+  rowModesModel: {},
+  timeFilter: "all",
+  selectedBotId: "all",
+  botOptions: [],
 }
 
 const MessagesGrid = () => {
-  const [messages, setMessages] = useState<Record<string, Message[]> | null>(
-    null,
-  )
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [rows, setRows] = useState<Message[]>([])
-  const [rowModesModel, setRowModesModel] = useState({})
-  const [timeFilter, setTimeFilter] = useState("all")
-  const [selectedBotId, setSelectedBotId] = useState<string>("all")
+  const [state, setState] = useState<MessagesState>(initialState)
+  const {
+    messages,
+    loading,
+    error,
+    rows,
+    rowModesModel,
+    timeFilter,
+    selectedBotId,
+    botOptions,
+  } = state
+
+  // Fetch bot options
+  useEffect(() => {
+    const loadBotOptions = async () => {
+      try {
+        const bots = await fetchBotNames()
+        setState(prev => ({ ...prev, botOptions: bots }))
+      } catch (err) {
+        console.error("Failed to load bots:", err)
+      }
+    }
+    loadBotOptions()
+  }, [])
 
   // Fetch messages based on selected bot
   useEffect(() => {
     const loadMessages = async () => {
-      setLoading(true)
+      setState(prev => ({ ...prev, loading: true }))
       try {
         const data = await fetchChatbotMessages(
           selectedBotId === "all" ? undefined : selectedBotId,
         )
-        setMessages(data)
-        setError(null)
+        setState(prev => ({
+          ...prev,
+          messages: data,
+          error: null,
+          loading: false,
+        }))
       } catch (err) {
         console.error("Failed to load messages:", err)
-        setError("Failed to load messages")
-      } finally {
-        setLoading(false)
+        setState(prev => ({
+          ...prev,
+          error: "Failed to load messages",
+          loading: false,
+        }))
       }
     }
     loadMessages()
@@ -61,11 +98,27 @@ const MessagesGrid = () => {
         .map((message: Message) => ({
           ...message,
           created_at: formatDate(message.created_at),
-          bot_name: message.bot_id,
+          // Map bot_id to bot_name using botOptions
+          bot_name:
+            botOptions.find(b => b.bot_id === message.bot_id)?.bot_name ||
+            message.bot_id,
         }))
-      setRows(formattedMessages)
+      setState(prev => ({ ...prev, rows: formattedMessages }))
     }
-  }, [messages])
+  }, [messages, botOptions]) // Added botOptions to dependencies
+
+  // Handler functions
+  const handleTimeFilterChange = (newTimeFilter: string) => {
+    setState(prev => ({ ...prev, timeFilter: newTimeFilter }))
+  }
+
+  const handleBotChange = (newBotId: string) => {
+    setState(prev => ({ ...prev, selectedBotId: newBotId }))
+  }
+
+  const handleRowModesModelChange = (newModel: Record<string, any>) => {
+    setState(prev => ({ ...prev, rowModesModel: newModel }))
+  }
 
   // Filter logic
   const filteredRows = filterRowsByTime(rows, timeFilter)
@@ -80,8 +133,8 @@ const MessagesGrid = () => {
       <FilterContainer
         timeFilter={timeFilter}
         selectedBotId={selectedBotId}
-        onTimeFilterChange={setTimeFilter}
-        onBotChange={setSelectedBotId}
+        onTimeFilterChange={handleTimeFilterChange}
+        onBotChange={handleBotChange}
       />
 
       <DataGrid
@@ -89,7 +142,7 @@ const MessagesGrid = () => {
         columns={MessagesColumns()}
         editMode="row"
         rowModesModel={rowModesModel}
-        onRowModesModelChange={setRowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
         slots={{ toolbar: Toolbar }}
       />
     </Box>

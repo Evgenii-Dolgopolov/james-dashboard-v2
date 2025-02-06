@@ -1,34 +1,52 @@
 "use client"
 
 import { ReactNode, useEffect, useState } from "react"
-import { fetchChatbotMessages } from "../services/fetchChatbotMessages"
-import { ChatbotContext } from "../context/ChatbotContext"
+import { fetchChatbotMessages } from "@/lib/supabase/queries"
+import { ChatbotContext } from "@/context/chatbot/ChatbotContext"
+import type { Message } from "@/lib/supabase/queries"
 
-export default function ChatbotProvider({ children }: { children: ReactNode }) {
-  const [messages, setMessages] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+type ChatbotProviderProps = {
+  children: ReactNode
+}
+
+type ChatbotState = {
+  messages: Record<string, Message[]>
+  loading: boolean
+  error: Error | null
+}
+
+export function ChatbotProvider({ children }: ChatbotProviderProps) {
+  const [state, setState] = useState<ChatbotState>({
+    messages: {},
+    loading: false,
+    error: null,
+  })
 
   useEffect(() => {
-    const getMessages = async () => {
-      setLoading(true)
+    async function loadMessages() {
+      setState(prev => ({ ...prev, loading: true }))
       try {
         const data = await fetchChatbotMessages()
-        setMessages(data)
-        setError(null)
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch messages")
-      } finally {
-        setLoading(false)
+        setState(prev => ({
+          ...prev,
+          messages: data,
+          loading: false,
+          error: null,
+        }))
+      } catch (error) {
+        setState(prev => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error ? error : new Error("An error occurred"),
+        }))
       }
     }
 
-    getMessages()
+    loadMessages()
   }, [])
 
   return (
-    <ChatbotContext.Provider value={{ messages, loading, error }}>
-      {children}
-    </ChatbotContext.Provider>
+    <ChatbotContext.Provider value={state}>{children}</ChatbotContext.Provider>
   )
 }

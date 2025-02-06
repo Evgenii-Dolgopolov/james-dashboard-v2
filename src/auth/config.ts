@@ -1,9 +1,16 @@
 // src/auth/config.ts
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { supabase } from "../utils/supabaseClient"
+import { supabase } from "@/lib/supabase/client"
+import { AuthOptions } from "next-auth"
 
-export const authConfig = {
+type UserData = {
+  id: string
+  email: string
+  name: string | null
+}
+
+export const authConfig: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -36,7 +43,7 @@ export const authConfig = {
             id: userData.id,
             email: userData.email,
             name: userData.name || "",
-          }
+          } as UserData
         } catch (error) {
           console.error("Authentication error:", error)
           return null
@@ -46,46 +53,36 @@ export const authConfig = {
   ],
   session: {
     strategy: "jwt",
-    // Setting a maximum age for the session
     maxAge: 24 * 60 * 60, // 24 hours in seconds
-    // Updating session every time it's checked to keep it fresh
     updateAge: 24 * 60 * 60, // 24 hours in seconds
   },
   pages: {
     signIn: "/login",
     error: "/login",
-    // Adding signOut page to ensure proper cleanup
     signOut: "/",
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // If this is a sign-in event, add user data to the token
       if (user) {
         token.id = user.id
         token.email = user.email
       }
 
-      // Handle token updates if needed
       if (trigger === "update" && session) {
-        // You can update token data here if needed
         return { ...token, ...session }
       }
 
       return token
     },
     async session({ session, token }) {
-      // Ensure user data is properly attached to the session
       if (token && session.user) {
         session.user.id = token.id
-        // You can add additional user data here if needed
       }
       return session
     },
   },
-  // Adding additional security options
-  secret: process.env.NEXTAUTH_SECRET, // Make sure this is set in your environment
+  secret: process.env.NEXTAUTH_SECRET,
   jwt: {
-    // Maximum age of the JWT token
-    maxAge: 24 * 60 * 60, // 24 hours in seconds
+    maxAge: 24 * 60 * 60,
   },
 }
