@@ -3,7 +3,6 @@
 // import DescriptionIcon from "@mui/icons-material/Description"
 // import LayersIcon from "@mui/icons-material/Layers"
 
-
 const NAVIGATION = [
   {
     segment: "dashboard/messages",

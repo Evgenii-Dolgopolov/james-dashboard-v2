@@ -1,8 +1,8 @@
-import { LoginForm } from "@/components/index"
+import { Login } from "@/components/index"
 import { FC } from "react"
 
 const LoginPage: FC = () => {
-  return <LoginForm />
+  return <Login />
 }
 
-export default LoginPage
+export default Login

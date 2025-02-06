@@ -1,8 +1,6 @@
-// src/auth/config.ts
-import NextAuth from "next-auth"
+import type { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { supabase } from "@/lib/supabase/client"
-import { AuthOptions } from "next-auth"
 
 type UserData = {
   id: string
@@ -10,7 +8,7 @@ type UserData = {
   name: string | null
 }
 
-export const authConfig: AuthOptions = {
+export const authConfig: NextAuthConfig = {
   providers: [
     CredentialsProvider({
       name: "Credentials",

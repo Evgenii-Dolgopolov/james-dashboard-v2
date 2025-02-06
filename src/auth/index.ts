@@ -1,14 +1,16 @@
 // src/auth/index.ts
 import NextAuth from "next-auth"
 import { authConfig } from "./config"
-import type { DefaultSession } from "next-auth"
 
-// Extend the built-in session types
+type ExtendedUser = {
+  id: string
+  email: string | null
+  name?: string | null
+}
+
 declare module "next-auth" {
-  type Session = {
-    user: {
-      id: string
-    } & DefaultSession["user"]
+  interface Session {
+    user: ExtendedUser
   }
 }
 
