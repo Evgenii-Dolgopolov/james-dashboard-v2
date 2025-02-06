@@ -11,7 +11,7 @@ import {
 // import { Button } from "@mui/material"
 // import AddIcon from "@mui/icons-material/Add"
 
-export const CustomToolbar = ({ ...props }) => {
+export const Toolbar = ({ ...props }) => {
   // const router = useRouter()
 
   // const handleClick = () => {

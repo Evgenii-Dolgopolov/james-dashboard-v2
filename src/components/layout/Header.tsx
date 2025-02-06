@@ -28,7 +28,7 @@ const Header: FC = () => {
       // SignOut with specific configuration to ensure complete cleanup
       await signOut({
         redirect: false, // We'll handle redirect manually
-        callbackUrl: "/",
+        redirectTo: "/",
       })
 
       // Force a hard navigation to the home page
@@ -56,7 +56,7 @@ const Header: FC = () => {
             </Typography>
 
             <Button
-              onClick={() => handleProtectedNavigation("/dashboard/users")}
+              onClick={() => handleProtectedNavigation("/dashboard/messages")}
               color="inherit"
               disabled={status === "loading"} // Prevent clicks during session check
             >

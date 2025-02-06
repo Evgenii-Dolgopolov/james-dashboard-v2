@@ -1,7 +1,7 @@
 "use client"
 
 import { DashboardLayout } from "@toolpad/core/DashboardLayout"
-import { ReactNode, Suspense, useEffect } from "react"
+import { ReactNode, Suspense } from "react"
 
 export default function DashboardPagesLayout({
   children,

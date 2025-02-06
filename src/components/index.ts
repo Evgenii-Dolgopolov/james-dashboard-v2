@@ -1,8 +1,8 @@
 import Charts from "@/components/charts/Charts"
-import UserDataGrid from "@/components/dashboard/users/UserDataGrid"
+import MessagesGrid from "@/components/grid/MessagesGrid"
 import Footer from "@/components/layout/Footer"
 import Header from "@/components/layout/Header"
 import Layout from "@/components/layout/Layout"
-import LoginForm from "@/components/login/LoginForm"
+import LoginForm from "@/components/login/Login"
 
-export { Charts, Footer, Header, Layout, LoginForm, UserDataGrid }
+export { Charts, Footer, Header, Layout, LoginForm, MessagesGrid }

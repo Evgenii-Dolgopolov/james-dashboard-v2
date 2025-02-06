@@ -6,7 +6,7 @@
 //   Cancel as CancelIcon,
 // } from "@mui/icons-material"
 
-export const DataColumns = () =>
+export const MessagesColumns = () =>
   // rowModesModel,
   // handleSaveClick,
   // handleCancelClick,

@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ReactNode, Suspense } from "react"
@@ -18,7 +17,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "b2blead",
-  description: "Analytics dashboard",
+  description: "Analytics grid",
 }
 
 export default function RootLayout({

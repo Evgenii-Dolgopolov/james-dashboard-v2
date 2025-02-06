@@ -5,12 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit">
-      <change beforePath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/options.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/route.ts" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/grid/BotFilterComponent.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/grid/FilterContainer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/grid/TimeFilterComponent.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/grid/sidebarNavigation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/users/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/messages/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/middleware.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/providers/AuthProvider.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/providers/Providers.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/constants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/dashboard/users/CustomToolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/Toolbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/dashboard/users/DataColumns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/MessagesColumns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/dashboard/users/DataGridStates.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/States.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/dashboard/users/UserDataGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/MessagesGrid.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/form/CreateUser.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/form/CreateUser.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/Layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/Layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/login/LoginForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/login/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/sidebarNavigation.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/providers/NextAppProviderWrapper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/providers/NextAppProviderWrapper.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/layout.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/loginForm.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/toolbar.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/user.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,12 +51,12 @@
     &quot;assignee&quot;: &quot;Evgenii-Dolgopolov&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Evgenii-Dolgopolov/james-dashboard-v2.git",
-    "accountId": "49adc22e-845c-4c3a-a845-0f473e44337e"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Evgenii-Dolgopolov/james-dashboard-v2.git&quot;,
+    &quot;accountId&quot;: &quot;49adc22e-845c-4c3a-a845-0f473e44337e&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -64,7 +83,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "prettierjs.PrettierConfiguration.Package": "/Users/edol/web-dev/work-projects/random-dashboard/node_modules/prettier",
-    "settings.editor.selected.configurable": "editor.preferences.yamlOptions",
+    "settings.editor.selected.configurable": "editor.preferences.folding",
     "ts.external.directory.path": "/Users/edol/web-dev/work-projects/random-dashboard/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -74,11 +93,11 @@
       <recent name="$PROJECT_DIR$/src/lib/utils/utils.js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/grid" />
       <recent name="$PROJECT_DIR$/src/app/dashboard" />
       <recent name="$PROJECT_DIR$/src/app/dashboard/users" />
       <recent name="$PROJECT_DIR$/src/app/user-list/analitics" />
       <recent name="$PROJECT_DIR$/src/app/statistics" />
-      <recent name="$PROJECT_DIR$/src/app" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -106,6 +125,7 @@
       <workItem from="1736682720382" duration="874000" />
       <workItem from="1737870827152" duration="12383000" />
       <workItem from="1738492199438" duration="332000" />
+      <workItem from="1738816438201" duration="4715000" />
     </task>
     <task id="LOCAL-00001" summary="feat(ui): add dropdown, calendar, checkbox, inputs">
       <option name="closed" value="true" />

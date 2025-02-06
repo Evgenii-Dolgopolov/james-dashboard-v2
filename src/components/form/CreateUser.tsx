@@ -99,9 +99,9 @@
 //       contactMethod: formatContactMethodOptions(Object.entries(formData.contactMethod))
 //     }
 
-//     usersContext.setUsers([...usersContext.users, newUser])
+//     usersContext.setUsers([...usersContext.messages, newUser])
 
-//     router.push("/dashboard/users")
+//     router.push("/grid/messages")
 //   }
 
 //   const handleResetForm = event => {
@@ -326,7 +326,7 @@
 //         <ButtonGroup variant="contained" color="primary">
 //           <Button
 //             onClick={() => {
-//               router.push("/dashboard")
+//               router.push("/grid")
 //             }}
 //           >
 //             Back

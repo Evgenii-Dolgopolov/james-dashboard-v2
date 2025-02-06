@@ -18,9 +18,9 @@ export const middleware = auth(async (request: NextRequest) => {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Redirect authenticated users away from login page
+  // Redirect authenticated messages away from login page
   if (isAuthenticated && pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+    return NextResponse.redirect(new URL("/grid", request.url))
   }
 
   return NextResponse.next()
@@ -28,7 +28,7 @@ export const middleware = auth(async (request: NextRequest) => {
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
+    "/grid/:path*",
     "/login",
     "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],

@@ -1,10 +1,10 @@
 "use client"
 
-import { UserDataGrid } from "@/components/index"
+import { MessagesGrid } from "@/components/index"
 import { FC } from "react"
 
 const DashboardPage: FC = () => {
-  return <UserDataGrid />
+  return <MessagesGrid />
 }
 
 export default DashboardPage

@@ -1,7 +1,7 @@
 "use client"
 
 import { NextAppProvider } from "@toolpad/core/nextjs"
-import { NAVIGATION } from "@/config/sidebarNavigation"
+import { NAVIGATION } from "@/components/grid/sidebarNavigation"
 import { createTheme } from "@mui/material/styles"
 
 
