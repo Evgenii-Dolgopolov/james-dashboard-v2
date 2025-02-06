@@ -1,41 +1,33 @@
-// import DashboardIcon from "@mui/icons-material/Dashboard"
-// import BarChartIcon from "@mui/icons-material/BarChart"
-// import DescriptionIcon from "@mui/icons-material/Description"
-// import LayersIcon from "@mui/icons-material/Layers"
+import React from "react"
+import DashboardIcon from "@mui/icons-material/Dashboard"
+import MessageIcon from "@mui/icons-material/Message"
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer"
+import PhoneCallbackIcon from "@mui/icons-material/PhoneCallback"
+import { ReactElement } from "react"
 
-const NAVIGATION = [
+type NavigationItem = {
+  segment: string
+  title: string
+  icon?: ReactElement
+  children?: NavigationItem[]
+}
+
+const NAVIGATION: NavigationItem[] = [
   {
     segment: "dashboard/messages",
     title: "Message View",
-    // icon: <DashboardIcon />,
+    icon: React.createElement(MessageIcon),
   },
   {
     segment: "dashboard/threads",
     title: "Thread View",
-    // icon: <DashboardIcon />,
+    icon: React.createElement(QuestionAnswerIcon),
   },
   {
     segment: "dashboard/callback",
     title: "Callback",
-    // icon: <DashboardIcon />,
+    icon: React.createElement(PhoneCallbackIcon),
   },
-  // {
-  //   segment: "grid",
-  //   title: "Statistics Dashboard",
-  //   // icon: <LayersIcon />,
-  //   children: [
-  //     {
-  //       segment: "chart",
-  //       title: "Chart",
-  //       // icon: <BarChartIcon />,
-  //     },
-  //     {
-  //       segment: "stats",
-  //       title: "Stats",
-  //       // icon: <BarChartIcon />,
-  //     },
-  //   ],
-  // },
 ]
 
 export { NAVIGATION }
