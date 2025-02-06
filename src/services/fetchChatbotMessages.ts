@@ -15,7 +15,9 @@ export const fetchChatbotMessages = async (selectedBotId?: string) => {
         .or(
           "user_message.neq.null,suggested_message.neq.null,bot_message.neq.null,user_email.neq.null",
         )
-        .order("created_at", { ascending: false })
+        // Using order() with a single string for Supabase
+        .order("thread_id", { ascending: false })
+        .order("created_at", { ascending: true })
         .range(start, start + batchSize - 1)
 
       if (selectedBotId) {
