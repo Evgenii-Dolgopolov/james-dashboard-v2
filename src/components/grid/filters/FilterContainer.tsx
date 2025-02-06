@@ -1,7 +1,7 @@
 import React from "react"
 import { Box } from "@mui/material"
-import { TimeFilterComponent } from "./TimeFilterComponent"
-import { BotFilterComponent } from "./BotFilterComponent"
+import { TimeFilter } from "./TimeFilter"
+import { BotFilter } from "./BotFilter"
 
 type FilterContainerProps = {
   timeFilter: string
@@ -18,11 +18,11 @@ export const FilterContainer: React.FC<FilterContainerProps> = ({
 }) => {
   return (
     <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-      <TimeFilterComponent
+      <TimeFilter
         timeFilter={timeFilter}
         onTimeFilterChange={onTimeFilterChange}
       />
-      <BotFilterComponent
+      <BotFilter
         selectedBotId={selectedBotId}
         onBotChange={onBotChange}
       />

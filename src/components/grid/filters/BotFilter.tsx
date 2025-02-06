@@ -7,7 +7,7 @@ type BotFilterProps = {
   onBotChange: (value: string) => void
 }
 
-export const BotFilterComponent: React.FC<BotFilterProps> = ({
+export const BotFilter: React.FC<BotFilterProps> = ({
   selectedBotId,
   onBotChange,
 }) => {

@@ -5,21 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit">
-      <change beforePath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/constants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/grid/BotFilterComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/BotFilterComponent.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/BotFilterComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/filters/BotFilter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/FilterContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/filters/FilterContainer.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/grid/MessagesGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/MessagesGrid.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/grid/sidebarNavigation.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/context/ChatbotContext.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hooks/useChatbotMessages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/useChatbotMessages.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/providers/ChatbotProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/providers/ChatbotProvider.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/providers/NextAppProviderWrapper.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/fetchChatbotMessages.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/supabaseClient.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/utils.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/TimeFilterComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/filters/TimeFilter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/Toolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/common/Toolbar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,6 +107,7 @@
       <workItem from="1738492199438" duration="332000" />
       <workItem from="1738816438201" duration="4715000" />
       <workItem from="1738826387804" duration="2790000" />
+      <workItem from="1738834020382" duration="324000" />
     </task>
     <task id="LOCAL-00001" summary="feat(ui): add dropdown, calendar, checkbox, inputs">
       <option name="closed" value="true" />

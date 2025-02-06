@@ -4,17 +4,17 @@ import React, { useState, useEffect } from "react"
 import { Box } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 import { MessagesColumns } from "./MessagesColumns"
-import { Toolbar } from "./Toolbar"
+import { Toolbar } from "../common/Toolbar"
 import { formatDate } from "@/utils/formatters"
 import { filterRowsByTime } from "@/utils/filters"
-import { LoadingState, ErrorState, EmptyState } from "./States"
+import { LoadingState, ErrorState, EmptyState } from "../common/States"
 import {
   fetchChatbotMessages,
   fetchBotNames,
   type Message,
   type Bot,
 } from "@/lib/supabase/queries"
-import { FilterContainer } from "./FilterContainer"
+import { FilterContainer } from "../filters/FilterContainer"
 
 type MessagesState = {
   messages: Record<string, Message[]> | null

@@ -6,7 +6,7 @@ type TimeFilterProps = {
   onTimeFilterChange: (value: string) => void
 }
 
-export const TimeFilterComponent: React.FC<TimeFilterProps> = ({
+export const TimeFilter: React.FC<TimeFilterProps> = ({
   timeFilter,
   onTimeFilterChange,
 }) => {
