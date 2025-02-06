@@ -73,7 +73,7 @@ const MessagesGrid = () => {
   // Render states
   if (loading) return <LoadingState />
   if (error) return <ErrorState error={error} />
-  if (!messages || messages.length === 0) return <EmptyState />
+  if (!messages || Object.keys(messages).length === 0) return <EmptyState />
 
   return (
     <Box sx={{ height: "auto", minHeight: 500, width: "95%" }}>
