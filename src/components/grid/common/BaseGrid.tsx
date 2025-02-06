@@ -126,20 +126,33 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
 
   return (
     <Box sx={{ height: "auto", minHeight: 500, width: "95%" }}>
-      <FilterContainer
-        timeFilter={timeFilter}
-        selectedBotId={selectedBotId}
-        onTimeFilterChange={handleTimeFilterChange}
-        onBotChange={handleBotChange}
-      />
-
       <DataGrid
         rows={filteredRows}
         columns={columns}
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        slots={{ toolbar: Toolbar }}
+        slots={{
+          toolbar: () => (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center", // This ensures vertical centering
+                p: 1,
+                width: "100%",
+              }}
+            >
+              <FilterContainer
+                timeFilter={timeFilter}
+                selectedBotId={selectedBotId}
+                onTimeFilterChange={handleTimeFilterChange}
+                onBotChange={handleBotChange}
+              />
+              <Toolbar /> 
+            </Box>
+          ),
+        }}
       />
     </Box>
   )

@@ -17,7 +17,7 @@ export const FilterContainer: React.FC<FilterContainerProps> = ({
   onBotChange,
 }) => {
   return (
-    <Box sx={{ display: "flex", gap: 2 }}>
+    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
       <TimeFilter
         timeFilter={timeFilter}
         onTimeFilterChange={onTimeFilterChange}

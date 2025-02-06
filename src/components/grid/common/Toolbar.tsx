@@ -22,9 +22,12 @@ export const Toolbar = ({ ...props }) => {
     <GridToolbarContainer
       {...props}
       sx={{
-        marginTop: 2, // Add margin to the top
-        paddingTop: 2, // Add padding to the top
-        height: "auto", // Adjust height if needed
+        height: "auto",
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        p: 0,
+        m: 0,
       }}
     >
       {/* <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
