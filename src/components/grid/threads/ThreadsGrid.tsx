@@ -1,7 +1,7 @@
-// src/components/grid/messages/MessagesGrid.tsx
+// src/components/grid/threads/ThreadsGrid.tsx
 "use client"
 
-import { MessagesColumns } from "./MessagesColumns"
+import { ThreadsColumns } from "./ThreadsColumns"
 import { BaseGrid } from "../common/BaseGrid"
 import { formatDate } from "@/utils/formatters"
 import type { Message, Bot } from "@/lib/supabase/queries"
@@ -11,7 +11,7 @@ const formatMessages = (
   botOptions: Bot[],
 ) => {
   return Object.values(messages)
-    .flat()
+    .map(thread => thread[0]) // Take first message from each thread
     .map((message: Message) => ({
       ...message,
       created_at: formatDate(message.created_at),
@@ -21,8 +21,6 @@ const formatMessages = (
     }))
 }
 
-export const MessagesGrid = () => {
-  return (
-    <BaseGrid columns={MessagesColumns()} formatMessages={formatMessages} />
-  )
+export const ThreadsGrid = () => {
+  return <BaseGrid columns={ThreadsColumns()} formatMessages={formatMessages} />
 }

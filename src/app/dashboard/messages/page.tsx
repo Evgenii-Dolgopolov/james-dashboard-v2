@@ -3,8 +3,8 @@
 import { MessagesGrid } from "@/components/index"
 import { FC } from "react"
 
-const DashboardPage: FC = () => {
+const DashboardMessagesView: FC = () => {
   return <MessagesGrid />
 }
 
-export default DashboardPage
+export default DashboardMessagesView
