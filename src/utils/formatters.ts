@@ -1,7 +1,7 @@
 import { Message } from "@/lib/supabase/queries"
 
 type ExtendedMessage = Message & {
-  suggested_message?: string // Making it optional with ?
+  suggested_message?: string
 }
 
 export function formatDate(dateString: string): string {
@@ -23,7 +23,10 @@ export function formatDate(dateString: string): string {
   return ""
 }
 
-export function calculateThreadDuration(messages: ExtendedMessage[]): string {
+export function calculateThreadDuration(
+  messages: { created_at: string }[],
+): string {
+  // Handle edge cases
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     return "00:00:00"
   }
@@ -34,36 +37,26 @@ export function calculateThreadDuration(messages: ExtendedMessage[]): string {
       new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
   )
 
-  // Find first actual message
-  const firstMessage = sortedMessages.find(
-    msg => msg.user_message || msg.suggested_message,
-  )
-
-  if (!firstMessage) {
+  // Ensure we have at least two unique timestamps
+  if (
+    sortedMessages.length < 2 ||
+    new Date(sortedMessages[0].created_at).getTime() ===
+      new Date(sortedMessages[sortedMessages.length - 1].created_at).getTime()
+  ) {
     return "00:00:00"
   }
 
-  // Find last message with any content
-  const lastMessage = [...sortedMessages]
-    .reverse()
-    .find(
-      msg =>
-        msg.user_message ||
-        msg.suggested_message ||
-        msg.bot_message ||
-        msg.user_email,
-    )
-
-  if (!lastMessage) {
-    return "00:00:00"
-  }
-
-  const startTime = new Date(firstMessage.created_at)
-  const endTime = new Date(lastMessage.created_at)
+  const startTime = new Date(sortedMessages[0].created_at)
+  const endTime = new Date(sortedMessages[sortedMessages.length - 1].created_at)
 
   const durationInSeconds = Math.floor(
     (endTime.getTime() - startTime.getTime()) / 1000,
   )
+
+  // Ensure non-negative duration
+  if (durationInSeconds <= 0) {
+    return "00:00:00"
+  }
 
   const hours = Math.floor(durationInSeconds / 3600)
   const minutes = Math.floor((durationInSeconds % 3600) / 60)

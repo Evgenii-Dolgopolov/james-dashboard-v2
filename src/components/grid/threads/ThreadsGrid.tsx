@@ -1,8 +1,7 @@
-// src/components/grid/threads/ThreadsGrid.tsx
 "use client"
 import { ThreadsColumns } from "./ThreadsColumns"
 import { BaseGrid } from "../common/BaseGrid"
-import { formatDate, calculateThreadDuration } from "@/utils/formatters"
+import { formatDate } from "@/utils/formatters"
 import type { Message, Bot } from "@/lib/supabase/queries"
 
 const formatMessages = (
@@ -12,22 +11,16 @@ const formatMessages = (
   return Object.entries(messages).map(([_, threadMessages]) => {
     const firstMessage = threadMessages[0]
 
-    const formattedMessage = {
+    return {
       ...firstMessage,
       created_at: formatDate(firstMessage.created_at),
-      botName:
+      bot_name:
         botOptions.find(b => b.bot_id === firstMessage.bot_id)?.bot_name ||
         firstMessage.bot_id,
       threadMessages,
-      duration: calculateThreadDuration(threadMessages), // Pre-calculate duration
-      totalMessages: threadMessages.length, // Add total message count
-    } as Message & {
-      threadMessages: Message[]
-      duration: string
-      totalMessages: number
+      duration: firstMessage.thread_duration || "00:00:00",
+      totalMessages: firstMessage.total_messages || threadMessages.length,
     }
-
-    return formattedMessage
   })
 }
 
