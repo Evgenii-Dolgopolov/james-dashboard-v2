@@ -1,8 +1,4 @@
-import { Message } from "@/lib/supabase/queries"
-
-type ExtendedMessage = Message & {
-  suggested_message?: string
-}
+// src/utils/formatters.ts
 
 export function formatDate(dateString: string): string {
   if (!dateString) {

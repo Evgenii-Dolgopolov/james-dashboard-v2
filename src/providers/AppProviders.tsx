@@ -1,3 +1,4 @@
+// src/providers/AppProviders.tsx
 "use client"
 
 import { ReactNode } from "react"

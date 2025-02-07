@@ -1,3 +1,4 @@
+// src/app/dashboard/threads/page.tsx
 "use client"
 
 import { ThreadsGrid } from "@/components/index"

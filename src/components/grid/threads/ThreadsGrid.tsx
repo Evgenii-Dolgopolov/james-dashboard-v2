@@ -1,3 +1,4 @@
+// src/components/grid/threads/ThreadsGrid.tsx
 "use client"
 import { ThreadsColumns } from "./ThreadsColumns"
 import { BaseGrid } from "../common/BaseGrid"

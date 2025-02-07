@@ -1,3 +1,4 @@
+// src/components/grid/threads/ThreadsColumns.tsx
 import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
 import type { Message } from "@/lib/supabase/queries"

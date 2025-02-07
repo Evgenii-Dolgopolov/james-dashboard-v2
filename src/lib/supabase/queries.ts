@@ -1,3 +1,4 @@
+// src/lib/supabase/queries.ts
 import { supabase } from "./client"
 import { groupMessagesByThread } from "@/services/messages/group"
 import { transformMessages } from "@/services/messages/transform"

@@ -1,3 +1,4 @@
+// src/services/messages/group.ts
 import { Message } from "@/lib/supabase/queries"
 
 export function groupMessagesByThread(

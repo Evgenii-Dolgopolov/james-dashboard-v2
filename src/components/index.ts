@@ -1,3 +1,4 @@
+// src/components/index.ts
 import Charts from "@/components/charts/Charts"
 import { MessagesGrid } from "@/components/grid/messages/MessagesGrid"
 import Footer from "@/components/layout/Footer"
