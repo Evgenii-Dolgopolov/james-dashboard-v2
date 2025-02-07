@@ -18,7 +18,7 @@ export const MessagesColumns = () =>
       field: "created_at",
       headerName: "Time",
       flex: 1,
-      minWidth: 150, // Adjusted width to accommodate the formatted date
+      minWidth: 165,
       editable: false,
     },
     {

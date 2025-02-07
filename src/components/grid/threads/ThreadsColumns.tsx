@@ -17,7 +17,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       field: "created_at",
       headerName: "Time",
       flex: 1,
-      minWidth: 150,
+      minWidth: 165,
       editable: false,
     },
     {
