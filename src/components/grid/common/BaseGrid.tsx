@@ -16,6 +16,16 @@ import {
 } from "@/lib/supabase/queries"
 import { FilterContainer } from "../filters/FilterContainer"
 
+type BaseGridProps = {
+  columns: any[]
+  formatMessages: (
+    messages: Record<string, Message[]>,
+    botOptions: Bot[],
+  ) => Message[]
+  threadFilter?: string // New prop for thread filtering
+}
+
+// Add threadFilter to the state
 type BaseGridState = {
   messages: Record<string, Message[]> | null
   loading: boolean
@@ -25,16 +35,10 @@ type BaseGridState = {
   timeFilter: string
   selectedBotId: string
   botOptions: Bot[]
+  threadFilter?: string // New state for thread filtering
 }
 
-type BaseGridProps = {
-  columns: any[]
-  formatMessages: (
-    messages: Record<string, Message[]>,
-    botOptions: Bot[],
-  ) => Message[]
-}
-
+// Update initialState
 const initialState: BaseGridState = {
   messages: null,
   loading: true,
@@ -44,6 +48,7 @@ const initialState: BaseGridState = {
   timeFilter: "all",
   selectedBotId: "all",
   botOptions: [],
+  threadFilter: undefined,
 }
 
 export const BaseGrid: React.FC<BaseGridProps> = ({
@@ -122,7 +127,9 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
 
   if (loading) return <LoadingState />
   if (error) return <ErrorState error={error} />
-  if (!messages || Object.keys(messages).length === 0) return <EmptyState />
+  if (!messages || Object.keys(messages).length === 0) {
+    return <EmptyState filtered={!!selectedBotId || !!threadFilter} />
+  }
 
   return (
     <Box sx={{ height: "auto", minHeight: 500, width: "95%" }}>
@@ -149,7 +156,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
                 onTimeFilterChange={handleTimeFilterChange}
                 onBotChange={handleBotChange}
               />
-              <Toolbar /> 
+              <Toolbar />
             </Box>
           ),
         }}

@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit">
-      <change beforePath="$PROJECT_DIR$/src/config/navigation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/navigation.ts" afterDir="false" />
-    </list>
+    <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -104,6 +102,7 @@
       <workItem from="1738816438201" duration="4715000" />
       <workItem from="1738826387804" duration="2790000" />
       <workItem from="1738834020382" duration="995000" />
+      <workItem from="1738898906743" duration="4000" />
     </task>
     <task id="LOCAL-00001" summary="feat(ui): add dropdown, calendar, checkbox, inputs">
       <option name="closed" value="true" />

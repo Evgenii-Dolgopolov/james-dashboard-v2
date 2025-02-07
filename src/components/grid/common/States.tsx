@@ -37,7 +37,8 @@ export const ErrorState = ({ error }: { error: string }) => {
   )
 }
 
-export const EmptyState = () => {
+// src/components/grid/common/States.tsx
+export const EmptyState = ({ filtered }: { filtered?: boolean }) => {
   return (
     <Box
       sx={{
@@ -50,7 +51,9 @@ export const EmptyState = () => {
         borderRadius: 1,
       }}
     >
-      <Typography color="text.secondary">No messages found</Typography>
+      <Typography color="text.secondary">
+        {filtered ? "No messages found for this thread" : "No messages found"}
+      </Typography>
     </Box>
   )
 }

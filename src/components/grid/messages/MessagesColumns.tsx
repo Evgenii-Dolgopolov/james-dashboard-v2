@@ -1,3 +1,4 @@
+// src/components/grid/messages/MessagesColumns.tsx
 // import { GridRowModes, GridActionsCellItem } from "@mui/x-data-grid"
 // import {
 //   Edit as EditIcon,
