@@ -22,10 +22,10 @@ export type Bot = {
   bot_id: string
 }
 
-// Define a type for thread duration map
 type ThreadDurationInfo = {
+  messages: { created_at: string; thread_id: string }[]
+  count: number
   duration: string
-  message_count: number
 }
 
 export async function fetchChatbotMessages(
@@ -45,30 +45,26 @@ export async function fetchChatbotMessages(
 
     if (messagesError) throw new Error(messagesError.message)
 
-    // Group messages by thread_id and calculate durations
-    const threadDurationMap = messages.reduce(
-      (acc, message) => {
-        if (!acc[message.thread_id]) {
-          acc[message.thread_id] = {
-            messages: [],
-            count: 0,
-          }
+    // Create and populate threadDurationMap with proper typing
+    const threadDurationMap: Record<string, ThreadDurationInfo> = {}
+
+    // Group messages and calculate durations
+    messages?.forEach(message => {
+      if (!threadDurationMap[message.thread_id]) {
+        threadDurationMap[message.thread_id] = {
+          messages: [],
+          count: 0,
+          duration: "00:00:00",
         }
-        acc[message.thread_id].messages.push(message)
-        acc[message.thread_id].count++
-        return acc
-      },
-      {} as Record<string, { messages: any[]; count: number }>,
-    )
+      }
+      threadDurationMap[message.thread_id].messages.push(message)
+      threadDurationMap[message.thread_id].count++
+    })
 
     // Calculate duration for each thread
     Object.keys(threadDurationMap).forEach(threadId => {
       const thread = threadDurationMap[threadId]
-      const duration = calculateThreadDuration(thread.messages)
-      threadDurationMap[threadId] = {
-        ...thread,
-        duration,
-      }
+      thread.duration = calculateThreadDuration(thread.messages)
     })
 
     // Fetch actual message data with pagination
