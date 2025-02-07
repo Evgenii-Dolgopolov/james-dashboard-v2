@@ -1,7 +1,7 @@
 // src/components/grid/threads/ThreadsColumns.tsx
 import { useRouter } from "next/navigation"
 import { calculateThreadDuration } from "@/utils/formatters"
-import { GridRenderCellParams } from "@mui/x-data-grid"
+import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
 import type { Message } from "@/lib/supabase/queries"
 
 // Define the type for our row data
@@ -10,7 +10,7 @@ type ThreadRow = Message & {
   duration: string
 }
 
-export const ThreadsColumns = () => {
+export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
   const router = useRouter()
 
   return [
@@ -61,15 +61,43 @@ export const ThreadsColumns = () => {
       flex: 1,
       minWidth: 80,
       editable: false,
+      sortable: true,
       renderCell: (params: GridRenderCellParams<ThreadRow>) => {
-        if (!params?.row?.threadMessages) {
-          return <div>0:00</div>
+        try {
+          const duration = params.row.duration || "0:00"
+          return (
+            <div style={{ textAlign: "right", width: "100%" }}>{duration}</div>
+          )
+        } catch (error) {
+          console.error("Error in duration renderCell:", error)
+          return <div style={{ textAlign: "right", width: "100%" }}>0:00</div>
+        }
+      },
+      sortComparator: (v1: string, v2: string) => {
+        const toSeconds = (duration: string) => {
+          try {
+            if (!duration) return 0
+
+            // Split into parts and reverse to handle both HH:MM:SS and MM:SS formats
+            const parts = duration.split(":").reverse()
+
+            // Convert all parts to numbers, defaulting to 0 for invalid values
+            const [seconds, minutes, hours] = parts.map(part => {
+              const num = parseInt(part, 10)
+              return isNaN(num) ? 0 : num
+            })
+
+            return hours * 3600 + minutes * 60 + seconds
+          } catch (error) {
+            console.error("Error parsing duration:", error)
+            return 0
+          }
         }
 
-        const duration = calculateThreadDuration(params.row.threadMessages)
-        return (
-          <div style={{ textAlign: "right", width: "100%" }}>{duration}</div>
-        )
+        const seconds1 = toSeconds(v1)
+        const seconds2 = toSeconds(v2)
+
+        return seconds1 - seconds2
       },
       align: "right",
       headerAlign: "right",
