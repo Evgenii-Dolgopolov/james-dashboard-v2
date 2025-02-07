@@ -2,15 +2,17 @@
 "use client"
 import { ThreadsColumns } from "./ThreadsColumns"
 import { BaseGrid } from "../common/BaseGrid"
-import { formatDate } from "@/utils/formatters"
+import { formatDate, calculateThreadDuration } from "@/utils/formatters"
 import type { Message, Bot } from "@/lib/supabase/queries"
 
 const formatMessages = (
   messages: Record<string, Message[]>,
   botOptions: Bot[],
 ) => {
-  return Object.entries(messages).map(([_, threadMessages]) => {
+  return Object.entries(messages).map(([threadId, threadMessages]) => {
     const firstMessage = threadMessages[0]
+    const totalMessages = threadMessages.length
+    const duration = calculateThreadDuration(threadMessages)
 
     return {
       ...firstMessage,
@@ -19,8 +21,8 @@ const formatMessages = (
         botOptions.find(b => b.bot_id === firstMessage.bot_id)?.bot_name ||
         firstMessage.bot_id,
       threadMessages,
-      duration: firstMessage.thread_duration || "00:00:00",
-      totalMessages: firstMessage.total_messages || threadMessages.length,
+      duration: duration,
+      totalMessages: totalMessages,
     }
   })
 }

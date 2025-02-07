@@ -21,45 +21,22 @@ export function formatDate(dateString: string): string {
 }
 
 export function calculateThreadDuration(
-  messages: { created_at: string }[],
+  messages: { created_at: string }[]
 ): string {
-  // Handle edge cases
-  if (!messages || !Array.isArray(messages) || messages.length === 0) {
+  if (!messages || messages.length < 2) {
     return "00:00:00"
   }
 
-  // Sort messages by created_at
-  const sortedMessages = [...messages].sort(
-    (a, b) =>
-      new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
-  )
+  const timestamps = messages
+    .map(m => new Date(m.created_at).getTime())
+    .sort((a, b) => a - b)
 
-  // Ensure we have at least two unique timestamps
-  if (
-    sortedMessages.length < 2 ||
-    new Date(sortedMessages[0].created_at).getTime() ===
-      new Date(sortedMessages[sortedMessages.length - 1].created_at).getTime()
-  ) {
-    return "00:00:00"
-  }
+  const duration = timestamps[timestamps.length - 1] - timestamps[0]
+  const seconds = Math.floor(duration / 1000)
+  
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const remainingSeconds = seconds % 60
 
-  const startTime = new Date(sortedMessages[0].created_at)
-  const endTime = new Date(sortedMessages[sortedMessages.length - 1].created_at)
-
-  const durationInSeconds = Math.floor(
-    (endTime.getTime() - startTime.getTime()) / 1000,
-  )
-
-  // Ensure non-negative duration
-  if (durationInSeconds <= 0) {
-    return "00:00:00"
-  }
-
-  const hours = Math.floor(durationInSeconds / 3600)
-  const minutes = Math.floor((durationInSeconds % 3600) / 60)
-  const seconds = durationInSeconds % 60
-
-  return `${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`
 }

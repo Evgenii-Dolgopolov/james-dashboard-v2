@@ -36,52 +36,42 @@ export async function fetchChatbotMessages(
     let start = 0
     const batchSize = 1000
 
-    // First, create a query to calculate thread durations
-    const { data: threadDurations, error: durationError } = await supabase
+    // First, fetch all messages to calculate thread durations
+    const { data: messages, error: messagesError } = await supabase
       .from("chatbot")
       .select("thread_id, created_at")
       .not("thread_id", "is", null)
       .order("created_at", { ascending: true })
 
-    if (durationError) throw new Error(durationError.message)
+    if (messagesError) throw new Error(messagesError.message)
 
-    // Group and calculate durations client-side
-    const threadDurationMap: Record<string, ThreadDurationInfo> =
-      threadDurations
-        ? Object.entries(
-            threadDurations.reduce(
-              (acc, message) => {
-                if (!acc[message.thread_id]) {
-                  acc[message.thread_id] = {
-                    messages: [],
-                    message_count: 0,
-                  }
-                }
-                acc[message.thread_id].messages.push(message)
-                acc[message.thread_id].message_count++
-                return acc
-              },
-              {} as Record<string, { messages: any[]; message_count: number }>,
-            ),
-          ).reduce(
-            (map, [threadId, threadData]) => {
-              // Ensure there are messages in the thread
-              if (threadData.messages.length > 0) {
-                // Calculate duration
-                const duration = calculateThreadDuration(threadData.messages)
+    // Group messages by thread_id and calculate durations
+    const threadDurationMap = messages.reduce(
+      (acc, message) => {
+        if (!acc[message.thread_id]) {
+          acc[message.thread_id] = {
+            messages: [],
+            count: 0,
+          }
+        }
+        acc[message.thread_id].messages.push(message)
+        acc[message.thread_id].count++
+        return acc
+      },
+      {} as Record<string, { messages: any[]; count: number }>,
+    )
 
-                map[threadId] = {
-                  duration,
-                  message_count: threadData.message_count,
-                }
-              }
+    // Calculate duration for each thread
+    Object.keys(threadDurationMap).forEach(threadId => {
+      const thread = threadDurationMap[threadId]
+      const duration = calculateThreadDuration(thread.messages)
+      threadDurationMap[threadId] = {
+        ...thread,
+        duration,
+      }
+    })
 
-              return map
-            },
-            {} as Record<string, ThreadDurationInfo>,
-          )
-        : {}
-
+    // Fetch actual message data with pagination
     while (true) {
       let query = supabase
         .from("chatbot")
@@ -107,8 +97,7 @@ export async function fetchChatbotMessages(
         ...message,
         thread_duration:
           threadDurationMap[message.thread_id]?.duration || "00:00:00",
-        total_messages:
-          threadDurationMap[message.thread_id]?.message_count || 1,
+        total_messages: threadDurationMap[message.thread_id]?.count || 1,
       }))
 
       allData = [...allData, ...transformedData]
