@@ -1,3 +1,4 @@
+// src/context/chatbot/ChatbotContext.ts
 import { createContext } from "react"
 import { Message } from "@/lib/supabase/queries"
 
