@@ -15,14 +15,16 @@ const formatMessages = (
     const formattedMessage = {
       ...firstMessage,
       created_at: formatDate(firstMessage.created_at),
-      bot_name:
+      botName:
         botOptions.find(b => b.bot_id === firstMessage.bot_id)?.bot_name ||
         firstMessage.bot_id,
       threadMessages,
       duration: calculateThreadDuration(threadMessages), // Pre-calculate duration
+      totalMessages: threadMessages.length, // Add total message count
     } as Message & {
       threadMessages: Message[]
       duration: string
+      totalMessages: number
     }
 
     return formattedMessage

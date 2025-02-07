@@ -8,6 +8,7 @@ import type { Message } from "@/lib/supabase/queries"
 type ThreadRow = Message & {
   threadMessages: Message[]
   duration: string
+  totalMessages: number
 }
 
 export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
@@ -22,7 +23,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       editable: false,
     },
     {
-      field: "bot_name",
+      field: "botName",
       headerName: "Bot Name",
       flex: 1,
       minWidth: 100,
@@ -49,11 +50,14 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       },
     },
     {
-      field: "user_message",
+      field: "totalMessages",
       headerName: "Number of Messages",
       flex: 1,
       minWidth: 150,
       editable: false,
+      type: "number",
+      align: "center",
+      headerAlign: "left",
     },
     {
       field: "duration",
@@ -62,6 +66,8 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       minWidth: 80,
       editable: false,
       sortable: true,
+      align: "left",
+      headerAlign: "right",
       renderCell: (params: GridRenderCellParams<ThreadRow>) => {
         try {
           const duration = params.row.duration || "0:00"
@@ -98,9 +104,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         const seconds2 = toSeconds(v2)
 
         return seconds1 - seconds2
-      },
-      align: "right",
-      headerAlign: "right",
+      }
     },
     {
       field: "user_email",
