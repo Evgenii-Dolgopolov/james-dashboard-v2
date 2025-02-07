@@ -25,7 +25,7 @@ export function formatDate(dateString: string): string {
 
 export function calculateThreadDuration(messages: ExtendedMessage[]): string {
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
-    return "0:00"
+    return "00:00:00"
   }
 
   // Sort messages by created_at
@@ -40,7 +40,7 @@ export function calculateThreadDuration(messages: ExtendedMessage[]): string {
   )
 
   if (!firstMessage) {
-    return "0:00"
+    return "00:00:00"
   }
 
   // Find last message with any content
@@ -55,7 +55,7 @@ export function calculateThreadDuration(messages: ExtendedMessage[]): string {
     )
 
   if (!lastMessage) {
-    return "0:00"
+    return "00:00:00"
   }
 
   const startTime = new Date(firstMessage.created_at)
@@ -64,10 +64,12 @@ export function calculateThreadDuration(messages: ExtendedMessage[]): string {
   const durationInSeconds = Math.floor(
     (endTime.getTime() - startTime.getTime()) / 1000,
   )
-  const minutes = Math.floor(durationInSeconds / 60)
+
+  const hours = Math.floor(durationInSeconds / 3600)
+  const minutes = Math.floor((durationInSeconds % 3600) / 60)
   const seconds = durationInSeconds % 60
 
-  const result = `${minutes}:${seconds.toString().padStart(2, "0")}`
-
-  return result
+  return `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
 }
