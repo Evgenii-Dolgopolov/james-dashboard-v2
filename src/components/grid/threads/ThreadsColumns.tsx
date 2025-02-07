@@ -1,6 +1,14 @@
 // src/components/grid/threads/ThreadsColumns.tsx
 import { useRouter } from "next/navigation"
 import { calculateThreadDuration } from "@/utils/formatters"
+import { GridRenderCellParams } from "@mui/x-data-grid"
+import type { Message } from "@/lib/supabase/queries"
+
+// Define the type for our row data
+type ThreadRow = Message & {
+  threadMessages: Message[]
+  duration: string
+}
 
 export const ThreadsColumns = () => {
   const router = useRouter()
@@ -27,7 +35,7 @@ export const ThreadsColumns = () => {
       minWidth: 100,
       editable: false,
       sortable: false,
-      renderCell: params => {
+      renderCell: (params: GridRenderCellParams<ThreadRow, string>) => {
         return (
           <div
             className="text-blue-600 hover:text-blue-800 cursor-pointer underline"
@@ -53,7 +61,7 @@ export const ThreadsColumns = () => {
       flex: 1,
       minWidth: 80,
       editable: false,
-      renderCell: params => {
+      renderCell: (params: GridRenderCellParams<ThreadRow>) => {
         if (!params?.row?.threadMessages) {
           return <div>0:00</div>
         }
