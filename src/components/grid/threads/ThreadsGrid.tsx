@@ -1,6 +1,5 @@
 // src/components/grid/threads/ThreadsGrid.tsx
 "use client"
-
 import { ThreadsColumns } from "./ThreadsColumns"
 import { BaseGrid } from "../common/BaseGrid"
 import { formatDate } from "@/utils/formatters"
@@ -10,15 +9,18 @@ const formatMessages = (
   messages: Record<string, Message[]>,
   botOptions: Bot[],
 ) => {
-  return Object.values(messages)
-    .map(thread => thread[0]) // Take first message from each thread
-    .map((message: Message) => ({
-      ...message,
-      created_at: formatDate(message.created_at),
+  return Object.entries(messages).map(([_, threadMessages]) => {
+    const firstMessage = threadMessages[0]
+
+    return {
+      ...firstMessage, // Spread all original Message properties
+      created_at: formatDate(firstMessage.created_at),
       bot_name:
-        botOptions.find(b => b.bot_id === message.bot_id)?.bot_name ||
-        message.bot_id,
-    }))
+        botOptions.find(b => b.bot_id === firstMessage.bot_id)?.bot_name ||
+        firstMessage.bot_id,
+      threadMessages, // Add threadMessages as an additional property
+    } as Message & { threadMessages: Message[] } // Type assertion to include the new property
+  })
 }
 
 export const ThreadsGrid = () => {

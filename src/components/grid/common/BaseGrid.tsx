@@ -21,8 +21,7 @@ type BaseGridProps = {
   formatMessages: (
     messages: Record<string, Message[]>,
     botOptions: Bot[],
-  ) => Message[]
-  threadFilter?: string // New prop for thread filtering
+  ) => (Message & { threadMessages?: Message[] })[] // Update return type
 }
 
 // Add threadFilter to the state

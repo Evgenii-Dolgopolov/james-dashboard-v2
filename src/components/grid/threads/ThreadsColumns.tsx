@@ -1,5 +1,6 @@
 // src/components/grid/threads/ThreadsColumns.tsx
 import { useRouter } from "next/navigation"
+import { calculateThreadDuration } from "@/utils/formatters"
 
 export const ThreadsColumns = () => {
   const router = useRouter()
@@ -47,11 +48,23 @@ export const ThreadsColumns = () => {
       editable: false,
     },
     {
-      field: "bot_message",
+      field: "duration",
       headerName: "Duration",
       flex: 1,
-      minWidth: 150,
+      minWidth: 80,
       editable: false,
+      renderCell: params => {
+        if (!params?.row?.threadMessages) {
+          return <div>0:00</div>
+        }
+
+        const duration = calculateThreadDuration(params.row.threadMessages)
+        return (
+          <div style={{ textAlign: "right", width: "100%" }}>{duration}</div>
+        )
+      },
+      align: "right",
+      headerAlign: "right",
     },
     {
       field: "user_email",
