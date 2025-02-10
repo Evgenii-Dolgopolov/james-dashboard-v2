@@ -64,6 +64,35 @@ export const MessagesColumns = () =>
       minWidth: 150,
       editable: false,
     },
+    {
+      field: "user_name",
+      headerName: "user_name",
+      flex: 1,
+      minWidth: 150,
+      editable: false,
+    },
+    {
+      field: "user_phone",
+      headerName: "user_phone",
+      flex: 1,
+      minWidth: 150,
+      editable: false,
+    },
+    {
+      field: "user_company",
+      headerName: "user_company",
+      flex: 1,
+      minWidth: 150,
+      editable: false,
+    },
+    {
+      field: "user_callback_message",
+      headerName: "user_callback_message",
+      flex: 1,
+      minWidth: 150,
+      editable: false,
+    },
+
     // {
     //   field: "actions",
     //   type: "actions",

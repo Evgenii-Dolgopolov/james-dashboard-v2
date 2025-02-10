@@ -138,6 +138,16 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
+        initialState={{
+          columns: {
+            columnVisibilityModel: {
+              user_name: false,
+              user_phone: false,
+              user_company: false,
+              user_callback_message: false,
+            },
+          },
+        }}
         slots={{
           toolbar: () => (
             <Box
