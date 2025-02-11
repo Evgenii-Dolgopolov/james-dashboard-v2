@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react"
 import { Box } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 import { Toolbar } from "./Toolbar"
-import { formatDate } from "@/utils/formatters"
 import { filterRowsByTime } from "@/utils/filters"
 import { LoadingState, ErrorState, EmptyState } from "./States"
 import {
@@ -21,10 +20,9 @@ type BaseGridProps = {
   formatMessages: (
     messages: Record<string, Message[]>,
     botOptions: Bot[],
-  ) => (Message & { threadMessages?: Message[] })[] // Update return type
+  ) => (Message & { threadMessages?: Message[] })[]
 }
 
-// Add threadFilter to the state
 type BaseGridState = {
   messages: Record<string, Message[]> | null
   loading: boolean
@@ -34,10 +32,9 @@ type BaseGridState = {
   timeFilter: string
   selectedBotId: string
   botOptions: Bot[]
-  threadFilter?: string // New state for thread filtering
+  threadFilter?: string 
 }
 
-// Update initialState
 const initialState: BaseGridState = {
   messages: null,
   loading: true,
@@ -154,7 +151,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
-                alignItems: "center", // This ensures vertical centering
+                alignItems: "center",
                 p: 1,
                 width: "100%",
               }}

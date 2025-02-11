@@ -22,7 +22,6 @@ const formatMessages = (
         message.bot_id,
     }))
 
-  // Apply thread filter if present
   if (threadFilter) {
     formattedMessages = formattedMessages.filter(
       message => message.thread_id === threadFilter

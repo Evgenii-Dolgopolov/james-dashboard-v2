@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
 import type { Message } from "@/lib/supabase/queries"
 
-// Define the type for our row data
 type ThreadRow = Message & {
   threadMessages: Message[]
   duration: string
