@@ -16,6 +16,7 @@ export type Message = {
   thread_duration?: string
   total_messages?: number
   sentiment_analysis?: number
+  sentiment_analysis_prompt?: string | null
 }
 
 export type Bot = {
@@ -37,7 +38,23 @@ export async function fetchChatbotMessages(
     let start = 0
     const batchSize = 1000
 
-    // First, fetch all messages to calculate thread durations
+    // First, fetch sentiment analysis prompts for all bots
+    const { data: clientData, error: clientError } = await supabase
+      .from("client_table")
+      .select("bot_id, sentiment_analysis_prompt")
+
+    if (clientError) throw new Error(clientError.message)
+
+    // Create a map of bot_id to sentiment_analysis_prompt
+    const promptMap = (clientData || []).reduce(
+      (acc, client) => {
+        acc[client.bot_id] = client.sentiment_analysis_prompt
+        return acc
+      },
+      {} as Record<string, string>,
+    )
+
+    // Fetch messages to calculate thread durations
     const { data: messages, error: messagesError } = await supabase
       .from("chatbot")
       .select("thread_id, created_at")
@@ -73,7 +90,21 @@ export async function fetchChatbotMessages(
       let query = supabase
         .from("chatbot")
         .select(
-          "id, created_at, typebot_id, thread_id, user_message, bot_message, user_email, suggested_message, user_name, user_phone, user_company, user_callback_message, sentiment_analysis",
+          `
+          id,
+          created_at,
+          typebot_id,
+          thread_id,
+          user_message,
+          bot_message,
+          user_email,
+          suggested_message,
+          user_name,
+          user_phone,
+          user_company,
+          user_callback_message,
+          sentiment_analysis
+        `,
         )
         .or(
           "user_message.neq.null,suggested_message.neq.null,bot_message.neq.null,user_email.neq.null",
@@ -95,12 +126,13 @@ export async function fetchChatbotMessages(
         thread_duration:
           threadDurationMap[message.thread_id]?.duration || "00:00:00",
         total_messages: threadDurationMap[message.thread_id]?.count || 1,
+        sentiment_analysis_prompt: promptMap[message.bot_id] || null,
       }))
 
       allData = [...allData, ...transformedData]
       start += batchSize
     }
-
+    console.log(allData)
     return groupMessagesByThread(allData)
   } catch (error) {
     console.error("Error fetching chatbot messages:", error)
