@@ -15,6 +15,7 @@ export type Message = {
   suggested_question: string | null
   thread_duration?: string
   total_messages?: number
+  sentiment_analysis?: number
 }
 
 export type Bot = {

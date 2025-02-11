@@ -62,7 +62,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
     selectedBotId,
     botOptions,
   } = state
-
+  
   useEffect(() => {
     const loadBotOptions = async () => {
       try {
