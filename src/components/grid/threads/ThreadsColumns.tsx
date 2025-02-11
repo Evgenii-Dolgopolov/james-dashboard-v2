@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
 import type { Message } from "@/lib/supabase/queries"
+import Button from "../common/Button"
 
 type ThreadRow = Message & {
   threadMessages: Message[]
@@ -48,14 +49,14 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       },
     },
     {
-      field: "totalMessages", 
+      field: "totalMessages",
       headerName: "Number of Messages",
       flex: 1,
       minWidth: 150,
       editable: false,
-      type: 'number',
-      align: 'right',
-      headerAlign: 'right',
+      type: "number",
+      align: "right",
+      headerAlign: "right",
     },
     {
       field: "duration",
@@ -72,7 +73,9 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
           )
         } catch (error) {
           console.error("Error in duration renderCell:", error)
-          return <div style={{ textAlign: "right", width: "100%" }}>00:00:00</div>
+          return (
+            <div style={{ textAlign: "right", width: "100%" }}>00:00:00</div>
+          )
         }
       },
       sortComparator: (v1: string, v2: string) => {
@@ -112,11 +115,18 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       editable: false,
     },
     {
-      field: "user",
+      field: "sentiment",
       headerName: "Sentiment",
       flex: 1,
       minWidth: 150,
       editable: false,
+      renderCell: (params: GridRenderCellParams<ThreadRow>) => {
+        return (
+          <Button onClick={() => console.log("clicked")}>
+            Analyze sentiment
+          </Button>
+        )
+      },
     },
   ]
 }

@@ -72,7 +72,7 @@ export async function fetchChatbotMessages(
       let query = supabase
         .from("chatbot")
         .select(
-          "id, created_at, typebot_id, thread_id, user_message, bot_message, user_email, suggested_message, user_name, user_phone, user_company, user_callback_message",
+          "id, created_at, typebot_id, thread_id, user_message, bot_message, user_email, suggested_message, user_name, user_phone, user_company, user_callback_message, sentiment_analysis",
         )
         .or(
           "user_message.neq.null,suggested_message.neq.null,bot_message.neq.null,user_email.neq.null",

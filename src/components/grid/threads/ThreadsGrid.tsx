@@ -23,6 +23,7 @@ const formatMessages = (
       threadMessages,
       duration: duration,
       totalMessages: totalMessages,
+      sentiment: null,
     }
   })
 }
