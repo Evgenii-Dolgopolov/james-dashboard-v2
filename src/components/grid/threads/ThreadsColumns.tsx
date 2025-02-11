@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
 import type { Message } from "@/lib/supabase/queries"
 import Button from "../common/Button"
+import { analyzeSentiment } from "@/services/sentiment/analyze"
 
 type ThreadRow = Message & {
   threadMessages: Message[]
@@ -12,6 +13,8 @@ type ThreadRow = Message & {
 
 export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
   const router = useRouter()
+
+
 
   return [
     {
