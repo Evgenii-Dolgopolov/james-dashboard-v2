@@ -14,6 +14,12 @@ const formatMessages = (
     const totalMessages = threadMessages.length
     const duration = calculateThreadDuration(threadMessages)
 
+    // Get message with callback info
+    const messageWithCallback = threadMessages.find(
+      message =>
+        message.user_email !== null && message.user_email !== undefined,
+    )
+
     return {
       ...firstMessage,
       created_at: formatDate(firstMessage.created_at),
@@ -24,6 +30,7 @@ const formatMessages = (
       duration: duration,
       totalMessages: totalMessages,
       sentiment: null,
+      user_email: messageWithCallback ? messageWithCallback.user_email : null,
     }
   })
 }
