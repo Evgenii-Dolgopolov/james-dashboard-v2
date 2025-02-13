@@ -1,3 +1,4 @@
+// src/config/navigation.ts
 import React, { ReactElement } from "react"
 import MessageIcon from "@mui/icons-material/Message"
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer"

@@ -38,7 +38,6 @@ export const ErrorState = ({ error }: { error: string }) => {
   )
 }
 
-// src/components/grid/common/States.tsx
 export const EmptyState = ({ filtered }: { filtered?: boolean }) => {
   return (
     <Box

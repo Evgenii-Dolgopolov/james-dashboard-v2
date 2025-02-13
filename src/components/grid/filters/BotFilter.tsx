@@ -1,3 +1,4 @@
+// src/components/grid/filters/BotFilter.tsx
 import React, { useEffect, useState } from "react"
 import { Select, MenuItem } from "@mui/material"
 import { fetchBotNames, type Bot } from "@/lib/supabase/queries"

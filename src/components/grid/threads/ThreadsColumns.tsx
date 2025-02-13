@@ -1,5 +1,5 @@
 // src/components/grid/threads/ThreadsColumns.tsx
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
 import { analyzeSentiment } from "@/services/sentiment/analyze"
@@ -39,7 +39,8 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
         return // Simply return if no chat history
       }
-
+      console.log(threadMessages[0].chat_history)
+      debugger
       const { success } = await analyzeSentiment({
         threadId,
         messageHistory: threadMessages[0].chat_history,
