@@ -23,6 +23,7 @@ export async function analyzeSentiment({
       messageHistory,
       prompt,
     })
+    console.log(`========>${messageHistory}<=========`)
 
     const response = await fetch("/api/groq", {
       method: "POST",

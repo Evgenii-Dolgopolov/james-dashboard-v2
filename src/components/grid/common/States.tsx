@@ -42,7 +42,7 @@ export const EmptyState = ({ filtered }: { filtered?: boolean }) => {
   return (
     <Box
       sx={{
-        height: 500,
+        height: "calc(100vh - 300px)",
         width: "100%",
         display: "flex",
         justifyContent: "center",

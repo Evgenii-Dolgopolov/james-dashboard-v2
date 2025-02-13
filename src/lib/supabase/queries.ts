@@ -143,12 +143,37 @@ export async function fetchChatbotMessages(
 }
 
 export async function fetchBotNames(): Promise<Bot[]> {
-  const { data, error } = await supabase
-    .from("client_table")
-    .select("bot_name, bot_id")
-    .not("bot_id", "is", null)
-    .order("bot_name", { ascending: true })
-  if (error) throw new Error(error.message)
-  if (!data) return []
-  return data
+  try {
+    // Add timeout to the request
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Request timeout")), 5000),
+    )
+
+    const fetchPromise = supabase
+      .from("client_table")
+      .select("bot_name, bot_id")
+      .not("bot_id", "is", null)
+      .order("bot_name", { ascending: true })
+
+    // Race between timeout and actual request
+    const { data, error } = (await Promise.race([
+      fetchPromise,
+      timeoutPromise,
+    ])) as any
+
+    if (error) {
+      console.error("Supabase error:", error)
+      throw new Error(`Failed to fetch bots: ${error.message}`)
+    }
+
+    if (!data) {
+      console.warn("No bot data received")
+      return []
+    }
+
+    return data
+  } catch (error) {
+    console.error("Error in fetchBotNames:", error)
+    throw error
+  }
 }

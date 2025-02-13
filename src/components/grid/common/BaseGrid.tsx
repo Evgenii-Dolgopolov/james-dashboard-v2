@@ -1,19 +1,18 @@
 // src/components/grid/common/BaseGrid.tsx
 "use client"
-
 import React, { useState, useEffect } from "react"
 import { Box } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 import { Toolbar } from "./Toolbar"
 import { filterRowsByTime } from "@/utils/filters"
 import { LoadingState, ErrorState, EmptyState } from "./States"
+import { FilterContainer } from "../filters/FilterContainer"
 import {
   fetchChatbotMessages,
   fetchBotNames,
   type Message,
   type Bot,
 } from "@/lib/supabase/queries"
-import { FilterContainer } from "../filters/FilterContainer"
 
 type BaseGridProps = {
   columns: any[]
@@ -32,7 +31,7 @@ type BaseGridState = {
   timeFilter: string
   selectedBotId: string
   botOptions: Bot[]
-  threadFilter?: string 
+  threadFilter?: string
 }
 
 const initialState: BaseGridState = {
@@ -62,7 +61,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
     selectedBotId,
     botOptions,
   } = state
-  
+
   useEffect(() => {
     const loadBotOptions = async () => {
       try {
@@ -123,50 +122,84 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
 
   if (loading) return <LoadingState />
   if (error) return <ErrorState error={error} />
-  if (!messages || Object.keys(messages).length === 0) {
-    return <EmptyState filtered={!!selectedBotId || !!threadFilter} />
+
+  const renderGridContent = () => {
+    if (!messages || filteredRows.length === 0) {
+      return (
+        <>
+          <Box sx={{ mb: 2 }}>
+            <FilterContainer
+              timeFilter={timeFilter}
+              selectedBotId={selectedBotId}
+              onTimeFilterChange={handleTimeFilterChange}
+              onBotChange={handleBotChange}
+            />
+          </Box>
+          <EmptyState filtered={!!selectedBotId || !!state.threadFilter} />
+        </>
+      )
+    }
+
+    return (
+      <Box sx={{ height: "calc(100vh - 200px)", width: "100%" }}>
+        <DataGrid
+          rows={filteredRows}
+          columns={columns}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          autoHeight={false}
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                user_name: false,
+                user_phone: false,
+                user_company: false,
+                user_callback_message: false,
+              },
+            },
+            pagination: {
+              paginationModel: { pageSize: 25, page: 0 },
+            },
+          }}
+          pageSizeOptions={[10, 25, 50, 100]}
+          slots={{
+            toolbar: () => (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  p: 1,
+                  width: "100%",
+                }}
+              >
+                <FilterContainer
+                  timeFilter={timeFilter}
+                  selectedBotId={selectedBotId}
+                  onTimeFilterChange={handleTimeFilterChange}
+                  onBotChange={handleBotChange}
+                />
+                <Toolbar />
+              </Box>
+            ),
+          }}
+        />
+      </Box>
+    )
   }
 
   return (
-    <Box sx={{ height: "auto", minHeight: 500, width: "95%" }}>
-      <DataGrid
-        rows={filteredRows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        initialState={{
-          columns: {
-            columnVisibilityModel: {
-              user_name: false,
-              user_phone: false,
-              user_company: false,
-              user_callback_message: false,
-            },
-          },
-        }}
-        slots={{
-          toolbar: () => (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                p: 1,
-                width: "100%",
-              }}
-            >
-              <FilterContainer
-                timeFilter={timeFilter}
-                selectedBotId={selectedBotId}
-                onTimeFilterChange={handleTimeFilterChange}
-                onBotChange={handleBotChange}
-              />
-              <Toolbar />
-            </Box>
-          ),
-        }}
-      />
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "calc(100vh - 100px)",
+        width: "95%",
+        margin: "0 auto",
+      }}
+    >
+      {renderGridContent()}
     </Box>
   )
 }

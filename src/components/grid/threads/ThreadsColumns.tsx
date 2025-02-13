@@ -23,6 +23,10 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
     {},
   )
 
+  const isValidChatHistory = (history: string | null | undefined): boolean => {
+    return !!history && history.trim().length > 0
+  }
+
   const handleSentimentAnalysis = async (
     params: GridRenderCellParams<ThreadRow>,
   ) => {
@@ -31,12 +35,11 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       setLoadingThreads(prev => ({ ...prev, [threadId]: true }))
       const threadMessages = messages[threadId]
 
-      if (!threadMessages || threadMessages.length === 0) {
-        setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
-        return
-      }
-
-      if (!threadMessages[0].chat_history) {
+      if (
+        !threadMessages ||
+        !threadMessages.length ||
+        !isValidChatHistory(threadMessages[0].chat_history)
+      ) {
         setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
         return
       }
@@ -168,8 +171,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         const threadId = params.row.thread_id
         const isLoading = loadingThreads[threadId]
         const hasSentiment = params.row.sentiment_analysis !== null
-        // Check for both null and empty string
-        const hasHistory = params.row.chat_history?.trim() !== ""
+        const hasValidHistory = isValidChatHistory(params.row.chat_history)
 
         if (isLoading) {
           return <div>Analyzing...</div>
@@ -182,7 +184,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         return (
           <Tooltip
             title={
-              !hasHistory
+              !hasValidHistory
                 ? "There is no chat history for this conversation"
                 : ""
             }
@@ -192,8 +194,10 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
             <span style={{ display: "inline-block" }}>
               <Button
                 onClick={() => handleSentimentAnalysis(params)}
-                disabled={isLoading || !hasHistory}
-                className={!hasHistory ? "opacity-50 cursor-not-allowed" : ""}
+                disabled={isLoading || !hasValidHistory}
+                className={
+                  !hasValidHistory ? "opacity-50 cursor-not-allowed" : ""
+                }
               >
                 Analyze sentiment
               </Button>
