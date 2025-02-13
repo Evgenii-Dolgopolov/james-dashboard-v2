@@ -31,8 +31,13 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       setLoadingThreads(prev => ({ ...prev, [threadId]: true }))
 
       const threadMessages = messages[threadId]
-      if (!threadMessages || threadMessages.length === 0) {
-        throw new Error("No messages found for thread")
+      if (
+        !threadMessages ||
+        threadMessages.length === 0 ||
+        !threadMessages[0].chat_history
+      ) {
+        setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
+        return // Simply return if no chat history
       }
 
       const { success } = await analyzeSentiment({
@@ -42,7 +47,6 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       })
 
       if (success) {
-        // Force a component remount after successful analysis
         window.location.reload()
       }
     } catch (error) {

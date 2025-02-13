@@ -1,7 +1,10 @@
 // src/lib/groq/client.ts
+import Groq from "groq-sdk"
 
-export const groqClient = {
-  analyze: async (prompt: string) => {
-    // Add Groq API implementation
-  }
+if (!process.env.NEXT_GROQ_API_KEY) {
+  throw new Error("Missing NEXT_GROQ_API_KEY environment variable")
 }
+
+export const groq = new Groq({
+  apiKey: process.env.NEXT_GROQ_API_KEY,
+})
