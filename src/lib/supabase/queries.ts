@@ -17,6 +17,7 @@ export type Message = {
   total_messages?: number
   sentiment_analysis?: number
   sentiment_analysis_prompt?: string | null
+  chat_history?: string | null
 }
 
 export type Bot = {
@@ -103,7 +104,8 @@ export async function fetchChatbotMessages(
           user_phone,
           user_company,
           user_callback_message,
-          sentiment_analysis
+          sentiment_analysis,
+          chat_history
         `,
         )
         .or(
@@ -132,7 +134,7 @@ export async function fetchChatbotMessages(
       allData = [...allData, ...transformedData]
       start += batchSize
     }
-    console.log(allData)
+
     return groupMessagesByThread(allData)
   } catch (error) {
     console.error("Error fetching chatbot messages:", error)

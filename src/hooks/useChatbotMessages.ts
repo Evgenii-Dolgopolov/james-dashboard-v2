@@ -10,5 +10,6 @@ export function useChatbotMessages() {
   if (!context) {
     throw new Error("useChatbotMessages must be used within a ChatbotProvider")
   }
+
   return context
 }

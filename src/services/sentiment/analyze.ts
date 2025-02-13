@@ -8,29 +8,30 @@ export type SentimentAnalysisRequest = {
 }
 
 export type SentimentAnalysisResponse = {
-  score: number
+  score: number | null
+  success: boolean
 }
 
 export async function analyzeSentiment({
   threadId,
   messageHistory,
   prompt,
-}: SentimentAnalysisRequest): Promise<SentimentAnalysisResponse> {
+ }: SentimentAnalysisRequest): Promise<SentimentAnalysisResponse> {
   try {
     // TODO: Add actual Groq API call here
-    const mockScore = Math.random() * 10 // Placeholder for now
-
+    const mockScore = Math.round(Math.random() * 9) + 1
+ 
     // Update Supabase with the sentiment score
     const { error } = await supabase
       .from("chatbot")
       .update({ sentiment_analysis: mockScore })
       .eq("thread_id", threadId)
-
+ 
     if (error) throw error
-
-    return { score: mockScore }
+ 
+    return { score: mockScore, success: true }
   } catch (error) {
     console.error("Error in sentiment analysis:", error)
-    throw error
+    return { score: null, success: false }
   }
-}
+ }

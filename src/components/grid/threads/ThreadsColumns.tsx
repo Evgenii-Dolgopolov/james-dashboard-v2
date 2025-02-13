@@ -1,20 +1,56 @@
 // src/components/grid/threads/ThreadsColumns.tsx
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
-import type { Message } from "@/lib/supabase/queries"
-import Button from "../common/Button"
 import { analyzeSentiment } from "@/services/sentiment/analyze"
+import { useChatbotMessages } from "@/hooks/useChatbotMessages"
+import Button from "../common/Button"
+import type { Message } from "@/lib/supabase/queries"
 
 type ThreadRow = Message & {
   threadMessages: Message[]
   duration: string
   totalMessages: number
+  chat_history: string
+  prompt: string | null
 }
 
 export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
   const router = useRouter()
+  const { messages } = useChatbotMessages()
+  const [loadingThreads, setLoadingThreads] = useState<Record<string, boolean>>(
+    {},
+  )
 
+  const handleSentimentAnalysis = async (
+    params: GridRenderCellParams<ThreadRow>,
+  ) => {
+    const threadId = params.row.thread_id
 
+    try {
+      setLoadingThreads(prev => ({ ...prev, [threadId]: true }))
+
+      const threadMessages = messages[threadId]
+      if (!threadMessages || threadMessages.length === 0) {
+        throw new Error("No messages found for thread")
+      }
+
+      const { success } = await analyzeSentiment({
+        threadId,
+        messageHistory: threadMessages[0].chat_history,
+        prompt: threadMessages[0].sentiment_analysis_prompt,
+      })
+
+      if (success) {
+        // Force a component remount after successful analysis
+        window.location.reload()
+      }
+    } catch (error) {
+      console.error("Error analyzing sentiment:", error)
+    } finally {
+      setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
+    }
+  }
 
   return [
     {
@@ -124,8 +160,21 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       minWidth: 150,
       editable: false,
       renderCell: (params: GridRenderCellParams<ThreadRow>) => {
-        return (
-          <Button onClick={() => console.log("clicked")}>
+        const threadId = params.row.thread_id
+        const isLoading = loadingThreads[threadId]
+        const hasSentiment = params.row.sentiment_analysis !== null
+
+        if (isLoading) {
+          return <div>Analyzing...</div>
+        }
+
+        return hasSentiment ? (
+          <div>{params.row.sentiment_analysis?.toFixed(0)}</div>
+        ) : (
+          <Button
+            onClick={() => handleSentimentAnalysis(params)}
+            disabled={isLoading}
+          >
             Analyze sentiment
           </Button>
         )
