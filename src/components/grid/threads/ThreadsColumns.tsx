@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
+import { Tooltip } from "@mui/material"
 import { analyzeSentiment } from "@/services/sentiment/analyze"
 import { useChatbotMessages } from "@/hooks/useChatbotMessages"
 import Button from "../common/Button"
@@ -26,21 +27,20 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
     params: GridRenderCellParams<ThreadRow>,
   ) => {
     const threadId = params.row.thread_id
-
     try {
       setLoadingThreads(prev => ({ ...prev, [threadId]: true }))
-
       const threadMessages = messages[threadId]
-      if (
-        !threadMessages ||
-        threadMessages.length === 0 ||
-        !threadMessages[0].chat_history
-      ) {
+
+      if (!threadMessages || threadMessages.length === 0) {
         setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
-        return // Simply return if no chat history
+        return
       }
-      console.log(threadMessages[0].chat_history)
-      debugger
+
+      if (!threadMessages[0].chat_history) {
+        setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
+        return
+      }
+
       const { success } = await analyzeSentiment({
         threadId,
         messageHistory: threadMessages[0].chat_history,
@@ -168,20 +168,37 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         const threadId = params.row.thread_id
         const isLoading = loadingThreads[threadId]
         const hasSentiment = params.row.sentiment_analysis !== null
+        // Check for both null and empty string
+        const hasHistory = params.row.chat_history?.trim() !== ""
 
         if (isLoading) {
           return <div>Analyzing...</div>
         }
 
-        return hasSentiment ? (
-          <div>{params.row.sentiment_analysis?.toFixed(0)}</div>
-        ) : (
-          <Button
-            onClick={() => handleSentimentAnalysis(params)}
-            disabled={isLoading}
+        if (hasSentiment) {
+          return <div>{params.row.sentiment_analysis?.toFixed(0)}</div>
+        }
+
+        return (
+          <Tooltip
+            title={
+              !hasHistory
+                ? "There is no chat history for this conversation"
+                : ""
+            }
+            placement="top"
+            arrow
           >
-            Analyze sentiment
-          </Button>
+            <span style={{ display: "inline-block" }}>
+              <Button
+                onClick={() => handleSentimentAnalysis(params)}
+                disabled={isLoading || !hasHistory}
+                className={!hasHistory ? "opacity-50 cursor-not-allowed" : ""}
+              >
+                Analyze sentiment
+              </Button>
+            </span>
+          </Tooltip>
         )
       },
     },
