@@ -1,3 +1,4 @@
+// src/auth/config.ts
 import type { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { supabase } from "@/lib/supabase/client"

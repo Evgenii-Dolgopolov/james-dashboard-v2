@@ -1,3 +1,4 @@
+// src/auth/constants.ts
 export const PROTECTED_ROUTES = [
   "/charts",
   "/dashboard",
