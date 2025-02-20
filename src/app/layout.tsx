@@ -6,6 +6,7 @@ import { Layout } from "@/components/index"
 import { AppProviders } from "@/providers/AppProviders"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
 import { SessionProvider } from "next-auth/react"
+import { AuthErrorBoundary } from "@/components/error/AuthErrorBoundary"
 
 import "@/styles/globals.css"
 
@@ -30,7 +31,9 @@ export default function RootLayout({
           <SessionProvider>
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>
               <AppProviders>
-                <Layout>{children}</Layout>
+                <AuthErrorBoundary>
+                  <Layout>{children}</Layout>
+                </AuthErrorBoundary>
               </AppProviders>
             </AppRouterCacheProvider>
           </SessionProvider>

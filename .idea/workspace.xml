@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit" />
+    <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit">
+      <change beforePath="$PROJECT_DIR$/middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/_not-found/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/_not-found/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/constants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/common/BaseGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/common/BaseGrid.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/common/Button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/common/Button.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/common/Toolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/common/Toolbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/filters/BotFilter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/filters/BotFilter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/filters/FilterContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/filters/FilterContainer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/context/chatbot/ChatbotContext.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/context/chatbot/ChatbotContext.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/providers/ChatbotProvider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/providers/ChatbotProvider.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -103,6 +119,7 @@
       <workItem from="1738826387804" duration="2790000" />
       <workItem from="1738834020382" duration="995000" />
       <workItem from="1738898906743" duration="4000" />
+      <workItem from="1740028304875" duration="28000" />
     </task>
     <task id="LOCAL-00001" summary="feat(ui): add dropdown, calendar, checkbox, inputs">
       <option name="closed" value="true" />

@@ -9,7 +9,7 @@ type ExtendedUser = {
 }
 
 declare module "next-auth" {
-  interface Session {
+  type Session = {
     user: ExtendedUser
   }
 }

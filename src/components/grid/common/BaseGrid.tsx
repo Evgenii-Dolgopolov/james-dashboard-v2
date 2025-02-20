@@ -1,12 +1,13 @@
 // src/components/grid/common/BaseGrid.tsx
 "use client"
 import React, { useState, useEffect } from "react"
-import { Box } from "@mui/material"
+import { Box, Alert, AlertTitle } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 import { Toolbar } from "./Toolbar"
 import { filterRowsByTime } from "@/utils/filters"
 import { LoadingState, ErrorState, EmptyState } from "./States"
 import { FilterContainer } from "../filters/FilterContainer"
+import { useSession } from "next-auth/react"
 import {
   fetchChatbotMessages,
   fetchBotNames,
@@ -20,6 +21,7 @@ type BaseGridProps = {
     messages: Record<string, Message[]>,
     botOptions: Bot[],
   ) => (Message & { threadMessages?: Message[] })[]
+  threadFilter?: string
 }
 
 type BaseGridState = {
@@ -49,62 +51,79 @@ const initialState: BaseGridState = {
 export const BaseGrid: React.FC<BaseGridProps> = ({
   columns,
   formatMessages,
+  threadFilter,
 }) => {
+  const { data: session, status } = useSession()
   const [state, setState] = useState<BaseGridState>(initialState)
-  const {
-    messages,
-    loading,
-    error,
-    rows,
-    rowModesModel,
-    timeFilter,
-    selectedBotId,
-    botOptions,
-  } = state
 
   useEffect(() => {
     const loadBotOptions = async () => {
+      if (status !== "authenticated" || !session?.user?.id) {
+        console.log("Session not ready for bot options")
+        return
+      }
+
       try {
-        const bots = await fetchBotNames()
-        setState(prev => ({ ...prev, botOptions: bots }))
+        const bots = await fetchBotNames(session.user.id)
+        if (bots.length > 0) {
+          console.log("Loaded bot options:", bots)
+          setState(prev => ({
+            ...prev,
+            botOptions: bots,
+            selectedBotId: bots[0].bot_id, // Auto-select the first bot
+          }))
+        }
       } catch (err) {
-        console.error("Failed to load bots:", err)
+        console.log("Error loading bot options:", err)
       }
     }
+
     loadBotOptions()
-  }, [])
+  }, [session?.user?.id, status])
 
   useEffect(() => {
     const loadMessages = async () => {
+      if (status !== "authenticated" || !session?.user?.id) {
+        console.log("Session not ready for messages")
+        return
+      }
+
       setState(prev => ({ ...prev, loading: true }))
+
       try {
         const data = await fetchChatbotMessages(
-          selectedBotId === "all" ? undefined : selectedBotId,
+          session.user.id,
+          state.selectedBotId,
         )
         setState(prev => ({
           ...prev,
           messages: data,
-          error: null,
           loading: false,
+          error: null,
         }))
       } catch (err) {
-        console.error("Failed to load messages:", err)
+        console.log("Error loading messages:", err)
         setState(prev => ({
           ...prev,
-          error: "Failed to load messages",
+          error: err instanceof Error ? err.message : "Failed to load messages",
           loading: false,
         }))
       }
     }
+
     loadMessages()
-  }, [selectedBotId])
+  }, [session?.user?.id, status, state.selectedBotId])
 
   useEffect(() => {
-    if (messages) {
-      const formattedMessages = formatMessages(messages, botOptions)
+    if (state.messages) {
+      console.log("Formatting messages with options:", {
+        messageThreads: Object.keys(state.messages).length,
+        botOptions: state.botOptions.length,
+      })
+      const formattedMessages = formatMessages(state.messages, state.botOptions)
       setState(prev => ({ ...prev, rows: formattedMessages }))
     }
-  }, [messages, botOptions, formatMessages])
+  }, [state.messages, state.botOptions, formatMessages])
 
   const handleTimeFilterChange = (newTimeFilter: string) => {
     setState(prev => ({ ...prev, timeFilter: newTimeFilter }))
@@ -118,24 +137,42 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
     setState(prev => ({ ...prev, rowModesModel: newModel }))
   }
 
-  const filteredRows = filterRowsByTime(rows, timeFilter)
+  const filteredRows = filterRowsByTime(state.rows, state.timeFilter)
 
-  if (loading) return <LoadingState />
-  if (error) return <ErrorState error={error} />
+  if (status === "loading" || state.loading) {
+    return <LoadingState />
+  }
+
+  if (!session?.user?.botAssignments?.length) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Alert severity="warning">
+          <AlertTitle>No Access</AlertTitle>
+          You don't have any bots assigned to your account. Please contact your
+          administrator.
+        </Alert>
+      </Box>
+    )
+  }
+
+  if (state.error) {
+    return <ErrorState error={state.error} />
+  }
 
   const renderGridContent = () => {
-    if (!messages || filteredRows.length === 0) {
+    if (!state.messages || filteredRows.length === 0) {
       return (
         <>
           <Box sx={{ mb: 2 }}>
             <FilterContainer
-              timeFilter={timeFilter}
-              selectedBotId={selectedBotId}
+              timeFilter={state.timeFilter}
+              selectedBotId={state.selectedBotId}
               onTimeFilterChange={handleTimeFilterChange}
               onBotChange={handleBotChange}
+              botOptions={state.botOptions}
             />
           </Box>
-          <EmptyState filtered={!!selectedBotId || !!state.threadFilter} />
+          <EmptyState filtered={!!state.selectedBotId || !!threadFilter} />
         </>
       )
     }
@@ -146,7 +183,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
           rows={filteredRows}
           columns={columns}
           editMode="row"
-          rowModesModel={rowModesModel}
+          rowModesModel={state.rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           autoHeight={false}
           initialState={{
@@ -175,10 +212,11 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
                 }}
               >
                 <FilterContainer
-                  timeFilter={timeFilter}
-                  selectedBotId={selectedBotId}
+                  timeFilter={state.timeFilter}
+                  selectedBotId={state.selectedBotId}
                   onTimeFilterChange={handleTimeFilterChange}
                   onBotChange={handleBotChange}
+                  botOptions={state.botOptions}
                 />
                 <Toolbar />
               </Box>
