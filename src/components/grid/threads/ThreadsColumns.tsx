@@ -248,9 +248,18 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
 
         const hasValidHistory = isValidChatHistory(params.row.chat_history)
 
+        // Common container styles for centering content
+        const containerStyles = {
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }
+
         if (isLoading) {
           return (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={containerStyles}>
               <CircularProgress size={24} sx={{ mr: 1 }} />
               <Typography variant="body2">Analyzing...</Typography>
             </Box>
@@ -265,15 +274,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
               arrow
               sx={{ maxWidth: 500 }}
             >
-              <Box
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+              <Box sx={containerStyles}>
                 <Typography
                   variant="body2"
                   fontWeight="bold"
@@ -288,27 +289,29 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
 
         return (
           <>
-            <Tooltip
-              title={
-                !hasValidHistory
-                  ? "There is no chat history for this conversation"
-                  : ""
-              }
-              placement="top"
-              arrow
-            >
-              <span style={{ display: "inline-block" }}>
-                <Button
-                  onClick={() => handleSentimentAnalysis(params)}
-                  disabled={isLoading || !hasValidHistory}
-                  className={
-                    !hasValidHistory ? "opacity-50 cursor-not-allowed" : ""
-                  }
-                >
-                  Analyze sentiment
-                </Button>
-              </span>
-            </Tooltip>
+            <Box sx={containerStyles}>
+              <Tooltip
+                title={
+                  !hasValidHistory
+                    ? "There is no chat history for this conversation"
+                    : ""
+                }
+                placement="top"
+                arrow
+              >
+                <span>
+                  <Button
+                    onClick={() => handleSentimentAnalysis(params)}
+                    disabled={isLoading || !hasValidHistory}
+                    className={
+                      !hasValidHistory ? "opacity-50 cursor-not-allowed" : ""
+                    }
+                  >
+                    Analyze sentiment
+                  </Button>
+                </span>
+              </Tooltip>
+            </Box>
 
             {/* Error message */}
             <Snackbar
