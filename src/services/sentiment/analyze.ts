@@ -10,6 +10,7 @@ export type SentimentAnalysisRequest = {
 export type SentimentAnalysisResponse = {
   score: number | null
   success: boolean
+  error?: string
 }
 
 export async function analyzeSentiment({
@@ -18,12 +19,38 @@ export async function analyzeSentiment({
   prompt,
 }: SentimentAnalysisRequest): Promise<SentimentAnalysisResponse> {
   try {
-    // Add logging to see what we're sending to the API
-    console.log("Sending to API:", {
-      messageHistory,
-      prompt,
+    // Add extensive logging to debug the issue
+    console.log("Sentiment analysis request details:", {
+      threadId,
+      messageHistoryLength: messageHistory?.length || 0,
+      promptLength: prompt?.length || 0,
+      hasThreadId: !!threadId,
+      hasMessageHistory: !!messageHistory,
+      hasPrompt: !!prompt,
     })
-    console.log(`========>${messageHistory}<=========`)
+
+    // Validate all required fields before sending
+    if (!threadId) {
+      return { score: null, success: false, error: "Thread ID is required" }
+    }
+
+    if (!messageHistory) {
+      return {
+        score: null,
+        success: false,
+        error: "Message history is required",
+      }
+    }
+
+    if (!prompt) {
+      return {
+        score: null,
+        success: false,
+        error: "Sentiment prompt is required",
+      }
+    }
+
+    console.log(`Sending to API with prompt: ${prompt.substring(0, 50)}...`)
 
     const response = await fetch("/api/groq", {
       method: "POST",
@@ -39,7 +66,11 @@ export async function analyzeSentiment({
     if (!response.ok) {
       const errorData = await response.json()
       console.error("API Error Response:", errorData)
-      throw new Error(errorData.error || "Failed to analyze sentiment")
+      return {
+        score: null,
+        success: false,
+        error: errorData.error || "Failed to analyze sentiment",
+      }
     }
 
     const { score } = await response.json()
@@ -50,11 +81,18 @@ export async function analyzeSentiment({
       .update({ sentiment_analysis: score })
       .eq("thread_id", threadId)
 
-    if (error) throw error
+    if (error) {
+      console.error("Error updating sentiment score in database:", error)
+      return { score, success: false, error: "Failed to save sentiment score" }
+    }
 
     return { score, success: true }
   } catch (error) {
-    console.error("Error in sentiment analysis:", error)
-    return { score: null, success: false }
+    console.error("Exception in sentiment analysis:", error)
+    return {
+      score: null,
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    }
   }
 }

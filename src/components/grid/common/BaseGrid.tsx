@@ -64,7 +64,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
   useEffect(() => {
     const loadBotOptions = async () => {
       if (status !== "authenticated" || !session?.user?.id) {
-        console.log("Session not ready for bot options")
+
         return
       }
       try {
@@ -89,7 +89,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
   useEffect(() => {
     const loadMessages = async () => {
       if (status !== "authenticated" || !session?.user?.id) {
-        console.log("Session not ready for messages")
+
         return
       }
       setState(prev => ({ ...prev, loading: true }))
@@ -115,10 +115,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
 
   useEffect(() => {
     if (state.messages) {
-      console.log("Formatting messages with options:", {
-        messageThreads: Object.keys(state.messages).length,
-        botOptions: state.botOptions.length,
-      })
+      
       const formattedMessages = formatMessages(state.messages, state.botOptions)
       setState(prev => ({ ...prev, rows: formattedMessages }))
     }

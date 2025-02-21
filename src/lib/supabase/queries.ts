@@ -24,10 +24,43 @@ export type Bot = {
   bot_id: string
 }
 
+export async function fetchSentimentPrompt(
+  botId: string,
+): Promise<string | null> {
+  if (!botId) {
+    console.error("No bot ID provided to fetchSentimentPrompt")
+    return null
+  }
+
+  try {
+    console.log("Fetching sentiment prompt for bot ID:", botId)
+
+    const { data, error } = await supabaseAdmin
+      .from("client_table")
+      .select("sentiment_analysis_prompt")
+      .eq("bot_id", botId)
+      .single()
+
+    if (error) {
+      console.error("Error fetching sentiment prompt:", error)
+      return null
+    }
+
+    if (!data || !data.sentiment_analysis_prompt) {
+      console.log("No sentiment prompt found for bot ID:", botId)
+      return null
+    }
+
+    return data.sentiment_analysis_prompt
+  } catch (error) {
+    console.error("Exception in fetchSentimentPrompt:", error)
+    return null
+  }
+}
+
 export async function fetchBotNames(userId?: string): Promise<Bot[]> {
   if (!userId) return []
   try {
-    console.log("Fetching bot names for user:", userId)
     // First get the bot IDs from user assignments
     const { data: assignments, error: assignmentError } = await supabaseAdmin
       .from("user_bot_assignments")

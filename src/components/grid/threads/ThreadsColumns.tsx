@@ -1,11 +1,11 @@
 // src/components/grid/threads/ThreadsColumns.tsx
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
 import { Tooltip } from "@mui/material"
 import { analyzeSentiment } from "@/services/sentiment/analyze"
 import { useChatbotMessages } from "@/hooks/useChatbotMessages"
-import { useBotAssignments } from "@/hooks/useBotAssignments"
+import { fetchSentimentPrompt } from "@/lib/supabase/queries"
 import Button from "../common/Button"
 import type { Message } from "@/lib/supabase/queries"
 
@@ -20,7 +20,6 @@ type ThreadRow = Message & {
 export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
   const router = useRouter()
   const { messages } = useChatbotMessages()
-  const { hasMultipleBots } = useBotAssignments()
   const [loadingThreads, setLoadingThreads] = useState<Record<string, boolean>>(
     {},
   )
@@ -29,38 +28,60 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
     return !!history && history.trim().length > 0
   }
 
-  const handleSentimentAnalysis = async (
-    params: GridRenderCellParams<ThreadRow>,
-  ) => {
-    const threadId = params.row.thread_id
-    try {
-      setLoadingThreads(prev => ({ ...prev, [threadId]: true }))
-      const threadMessages = messages[threadId]
-      if (
-        !threadMessages ||
-        !threadMessages.length ||
-        !isValidChatHistory(threadMessages[0].chat_history)
-      ) {
-        setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
-        return
-      }
-      const { success } = await analyzeSentiment({
-        threadId,
-        messageHistory: threadMessages[0].chat_history,
-        prompt: threadMessages[0].sentiment_analysis_prompt,
-      })
-      if (success) {
-        window.location.reload()
-      }
-    } catch (error) {
-      console.error("Error analyzing sentiment:", error)
-    } finally {
-      setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
-    }
-  }
+  const handleSentimentAnalysis = useCallback(
+    async (params: GridRenderCellParams<ThreadRow>) => {
+      const threadId = params.row.thread_id
+      const botId = params.row.bot_id
 
-  // Define all columns
-  const allColumns: GridColDef<ThreadRow>[] = [
+      try {
+        setLoadingThreads(prev => ({ ...prev, [threadId]: true }))
+        const threadMessages = messages[threadId]
+
+        if (
+          !threadMessages ||
+          !threadMessages.length ||
+          !isValidChatHistory(threadMessages[0].chat_history)
+        ) {
+          console.error("Missing valid chat history for thread:", threadId)
+          setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
+          return
+        }
+
+        // Fetch the sentiment prompt from client_table based on the bot ID
+        const sentimentPrompt = await fetchSentimentPrompt(botId)
+
+        if (!sentimentPrompt) {
+          console.error("No sentiment prompt found for bot ID:", botId)
+          setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
+          return
+        }
+
+        console.log("Sentiment analysis request data:", {
+          threadId,
+          botId,
+          hasHistory: !!threadMessages[0].chat_history,
+          promptFound: !!sentimentPrompt,
+        })
+
+        const { success } = await analyzeSentiment({
+          threadId,
+          messageHistory: threadMessages[0].chat_history || "",
+          prompt: sentimentPrompt,
+        })
+
+        if (success) {
+          window.location.reload()
+        }
+      } catch (error) {
+        console.error("Error analyzing sentiment:", error)
+      } finally {
+        setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
+      }
+    },
+    [messages],
+  )
+
+  return [
     {
       field: "created_at",
       headerName: "Time",
@@ -129,9 +150,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         const toSeconds = (duration: string) => {
           try {
             if (!duration) return 0
-            // Split into parts and reverse to handle both HH:MM:SS and MM:SS formats
             const parts = duration.split(":").reverse()
-            // Convert all parts to numbers, defaulting to 0 for invalid values
             const [seconds, minutes, hours] = parts.map(part => {
               const num = parseInt(part, 10)
               return isNaN(num) ? 0 : num
@@ -200,9 +219,4 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       },
     },
   ]
-
-  // Filter out the bot_name column if user only has one bot assigned
-  return allColumns.filter(
-    column => hasMultipleBots || column.field !== "bot_name",
-  )
 }
