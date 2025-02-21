@@ -27,7 +27,6 @@ export const BotFilter: React.FC<BotFilterProps> = ({
 
   useEffect(() => {
     if (status === "loading") return
-
     if (
       status === "authenticated" &&
       assignedBotIds.length &&
@@ -71,7 +70,7 @@ export const BotFilter: React.FC<BotFilterProps> = ({
       <MenuItem value="all">All Assigned Bots</MenuItem>
       {filteredBotOptions.map(bot => (
         <MenuItem key={bot.bot_id} value={bot.bot_id}>
-          {bot.bot_name}
+          {bot.bot_name || bot.bot_id} {/* Display name with fallback to ID */}
         </MenuItem>
       ))}
     </Select>

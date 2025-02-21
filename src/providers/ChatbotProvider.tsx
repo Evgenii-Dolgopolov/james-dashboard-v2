@@ -1,6 +1,5 @@
 // src/providers/ChatbotProvider.tsx
 "use client"
-
 import { ReactNode, useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { fetchChatbotMessages } from "@/lib/supabase/queries"
@@ -44,7 +43,8 @@ export function ChatbotProvider({ children }: ChatbotProviderProps) {
 
       setState(prev => ({ ...prev, loading: true }))
       try {
-        const data = await fetchChatbotMessages(session.user.id)
+        // Pass "all" to fetch messages for all assigned bots
+        const data = await fetchChatbotMessages(session.user.id, "all")
         setState(prev => ({
           ...prev,
           messages: data,

@@ -14,6 +14,9 @@ const formatMessages = (
     const totalMessages = threadMessages.length
     const duration = calculateThreadDuration(threadMessages)
 
+    // Find bot name from bot options
+    const bot = botOptions.find(b => b.bot_id === firstMessage.bot_id)
+
     // Get message with callback info
     const messageWithCallback = threadMessages.find(
       message =>
@@ -23,9 +26,7 @@ const formatMessages = (
     return {
       ...firstMessage,
       created_at: formatDate(firstMessage.created_at),
-      bot_name:
-        botOptions.find(b => b.bot_id === firstMessage.bot_id)?.bot_name ||
-        firstMessage.bot_id,
+      bot_name: bot?.bot_name || firstMessage.bot_id, // Use bot name with fallback to ID
       threadMessages,
       duration: duration,
       totalMessages: totalMessages,

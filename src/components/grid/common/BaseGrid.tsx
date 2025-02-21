@@ -54,7 +54,10 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
   threadFilter,
 }) => {
   const { data: session, status } = useSession()
-  const [state, setState] = useState<BaseGridState>(initialState)
+  const [state, setState] = useState<BaseGridState>({
+    ...initialState,
+    threadFilter,
+  })
 
   useEffect(() => {
     const loadBotOptions = async () => {
@@ -62,7 +65,6 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
         console.log("Session not ready for bot options")
         return
       }
-
       try {
         const bots = await fetchBotNames(session.user.id)
         if (bots.length > 0) {
@@ -70,14 +72,13 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
           setState(prev => ({
             ...prev,
             botOptions: bots,
-            selectedBotId: bots[0].bot_id, // Auto-select the first bot
+            selectedBotId: "all", // Set to 'all' by default
           }))
         }
       } catch (err) {
         console.log("Error loading bot options:", err)
       }
     }
-
     loadBotOptions()
   }, [session?.user?.id, status])
 
@@ -87,9 +88,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
         console.log("Session not ready for messages")
         return
       }
-
       setState(prev => ({ ...prev, loading: true }))
-
       try {
         const data = await fetchChatbotMessages(
           session.user.id,
@@ -110,7 +109,6 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
         }))
       }
     }
-
     loadMessages()
   }, [session?.user?.id, status, state.selectedBotId])
 
@@ -176,7 +174,6 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
         </>
       )
     }
-
     return (
       <Box sx={{ height: "calc(100vh - 200px)", width: "100%" }}>
         <DataGrid
