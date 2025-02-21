@@ -14,7 +14,8 @@ export type Message = {
   suggested_question: string | null
   thread_duration?: string
   total_messages?: number
-  sentiment_analysis?: number
+  sentiment_analysis?: number | null
+  sentiment_analysis_justification?: string | null
   sentiment_analysis_prompt?: string | null
   chat_history?: string | null
 }

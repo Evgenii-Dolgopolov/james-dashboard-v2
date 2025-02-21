@@ -1,6 +1,4 @@
 // src/services/sentiment/analyze.ts
-import { supabase } from "@/lib/supabase/client"
-
 export type SentimentAnalysisRequest = {
   threadId: string
   messageHistory: string
@@ -9,6 +7,7 @@ export type SentimentAnalysisRequest = {
 
 export type SentimentAnalysisResponse = {
   score: number | null
+  justification?: string
   success: boolean
   error?: string
 }
@@ -19,15 +18,7 @@ export async function analyzeSentiment({
   prompt,
 }: SentimentAnalysisRequest): Promise<SentimentAnalysisResponse> {
   try {
-    // Add extensive logging to debug the issue
-    console.log("Sentiment analysis request details:", {
-      threadId,
-      messageHistoryLength: messageHistory?.length || 0,
-      promptLength: prompt?.length || 0,
-      hasThreadId: !!threadId,
-      hasMessageHistory: !!messageHistory,
-      hasPrompt: !!prompt,
-    })
+    console.log("Starting sentiment analysis for thread:", threadId)
 
     // Validate all required fields before sending
     if (!threadId) {
@@ -50,21 +41,16 @@ export async function analyzeSentiment({
       }
     }
 
-    console.log(`Sending to API with prompt: ${prompt.substring(0, 50)}...`)
-
-    const response = await fetch("/api/groq", {
+    // Step 1: Get sentiment analysis from Groq API
+    console.log("Sending request to Groq API...")
+    const analysisResponse = await fetch("/api/groq", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        messageHistory,
-        prompt,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messageHistory, prompt }),
     })
 
-    if (!response.ok) {
-      const errorData = await response.json()
+    if (!analysisResponse.ok) {
+      const errorData = await analysisResponse.json()
       console.error("API Error Response:", errorData)
       return {
         score: null,
@@ -73,20 +59,43 @@ export async function analyzeSentiment({
       }
     }
 
-    const { score } = await response.json()
+    // Parse the response which now includes both score and justification
+    const analysisData = await analysisResponse.json()
+    const { score, justification } = analysisData
 
-    // Update Supabase with the sentiment score
-    const { error } = await supabase
-      .from("chatbot")
-      .update({ sentiment_analysis: score })
-      .eq("thread_id", threadId)
+    console.log("Received sentiment analysis:", { score, justification })
 
-    if (error) {
-      console.error("Error updating sentiment score in database:", error)
-      return { score, success: false, error: "Failed to save sentiment score" }
+    // Step 2: Update the database via dedicated API
+    console.log("Updating database with sentiment data...")
+    const updateResponse = await fetch("/api/sentiment/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        threadId,
+        score,
+        justification,
+      }),
+    })
+
+    if (!updateResponse.ok) {
+      const errorData = await updateResponse.json()
+      console.error("Database Update Error:", errorData)
+      return {
+        score,
+        justification,
+        success: false,
+        error: errorData.error || "Failed to save sentiment data",
+      }
     }
 
-    return { score, success: true }
+    const updateResult = await updateResponse.json()
+    console.log("Database update result:", updateResult)
+
+    return {
+      score,
+      justification,
+      success: true,
+    }
   } catch (error) {
     console.error("Exception in sentiment analysis:", error)
     return {

@@ -12,6 +12,7 @@ export function transformMessages(data: any[]): Message[] {
     user_email: message.user_email,
     suggested_question: message.suggested_message,
     sentiment_analysis: message.sentiment_analysis,
+    sentiment_analysis_justification: message.sentiment_analysis_justification,
     sentiment_analysis_prompt: message.sentiment_analysis_prompt,
     chat_history: message.chat_history || "",
   }))

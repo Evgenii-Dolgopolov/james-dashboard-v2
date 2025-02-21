@@ -6,7 +6,7 @@ import { groq } from "./client"
  *
  * @param messageHistory The chat history to analyze
  * @param prompt The system prompt to guide the analysis
- * @returns A numeric score representing the sentiment
+ * @returns A JSON string containing score and justification
  */
 export async function groqSentimentAnalysis(
   messageHistory: string,
@@ -46,7 +46,7 @@ export async function groqSentimentAnalysis(
     }
 
     console.log("Groq raw result:", result)
-    return result
+    return result // Return the raw JSON string from the model
   } catch (error) {
     console.error("Error in groqSentimentAnalysis:", error)
     throw error

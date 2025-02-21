@@ -2,7 +2,14 @@
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
-import { Tooltip } from "@mui/material"
+import {
+  Tooltip,
+  Box,
+  Typography,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from "@mui/material"
 import { analyzeSentiment } from "@/services/sentiment/analyze"
 import { useChatbotMessages } from "@/hooks/useChatbotMessages"
 import { fetchSentimentPrompt } from "@/lib/supabase/queries"
@@ -15,6 +22,7 @@ type ThreadRow = Message & {
   totalMessages: number
   chat_history: string
   prompt: string | null
+  sentiment_analysis_justification?: string | null
 }
 
 export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
@@ -23,6 +31,21 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
   const [loadingThreads, setLoadingThreads] = useState<Record<string, boolean>>(
     {},
   )
+  const [analysisError, setAnalysisError] = useState<string | null>(null)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [analysisResults, setAnalysisResults] = useState<Record<string, any>>(
+    {},
+  )
+
+  // Close error message
+  const handleCloseError = () => {
+    setAnalysisError(null)
+  }
+
+  // Close success message
+  const handleCloseSuccess = () => {
+    setShowSuccessMessage(false)
+  }
 
   const isValidChatHistory = (history: string | null | undefined): boolean => {
     return !!history && history.trim().length > 0
@@ -35,6 +58,8 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
 
       try {
         setLoadingThreads(prev => ({ ...prev, [threadId]: true }))
+        setAnalysisError(null)
+
         const threadMessages = messages[threadId]
 
         if (
@@ -43,6 +68,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
           !isValidChatHistory(threadMessages[0].chat_history)
         ) {
           console.error("Missing valid chat history for thread:", threadId)
+          setAnalysisError("No valid chat history found for this thread")
           setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
           return
         }
@@ -52,6 +78,9 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
 
         if (!sentimentPrompt) {
           console.error("No sentiment prompt found for bot ID:", botId)
+          setAnalysisError(
+            `No sentiment prompt configured for bot ID: ${botId}`,
+          )
           setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
           return
         }
@@ -63,18 +92,38 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
           promptFound: !!sentimentPrompt,
         })
 
-        const { success } = await analyzeSentiment({
+        const result = await analyzeSentiment({
           threadId,
           messageHistory: threadMessages[0].chat_history || "",
           prompt: sentimentPrompt,
         })
 
-        if (success) {
-          window.location.reload()
+        console.log("Sentiment analysis result:", result)
+
+        if (result.success) {
+          // Store the result locally to display immediately
+          setAnalysisResults(prev => ({
+            ...prev,
+            [threadId]: {
+              score: result.score,
+              justification: result.justification,
+            },
+          }))
+          setShowSuccessMessage(true)
+
+          // Wait a moment before finishing the loading state
+          setTimeout(() => {
+            setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
+          }, 1000)
+        } else {
+          setAnalysisError(result.error || "Failed to analyze sentiment")
+          setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
         }
       } catch (error) {
         console.error("Error analyzing sentiment:", error)
-      } finally {
+        setAnalysisError(
+          error instanceof Error ? error.message : "An unknown error occurred",
+        )
         setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
       }
     },
@@ -184,37 +233,115 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       renderCell: (params: GridRenderCellParams<ThreadRow>) => {
         const threadId = params.row.thread_id
         const isLoading = loadingThreads[threadId]
-        const hasSentiment = params.row.sentiment_analysis !== null
+
+        // First check if we have a local result (newly analyzed)
+        const localResult = analysisResults[threadId]
+
+        // Then check if the row already has sentiment data from the database
+        const dbSentiment = params.row.sentiment_analysis
+        const dbJustification = params.row.sentiment_analysis_justification
+
+        // Use local result if available, otherwise use database value
+        const hasSentiment = !!localResult || dbSentiment !== null
+        const sentimentScore = localResult?.score ?? dbSentiment
+        const justification = localResult?.justification ?? dbJustification
+
         const hasValidHistory = isValidChatHistory(params.row.chat_history)
 
         if (isLoading) {
-          return <div>Analyzing...</div>
+          return (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <CircularProgress size={24} sx={{ mr: 1 }} />
+              <Typography variant="body2">Analyzing...</Typography>
+            </Box>
+          )
         }
+
         if (hasSentiment) {
-          return <div>{params.row.sentiment_analysis?.toFixed(0)}</div>
-        }
-        return (
-          <Tooltip
-            title={
-              !hasValidHistory
-                ? "There is no chat history for this conversation"
-                : ""
-            }
-            placement="top"
-            arrow
-          >
-            <span style={{ display: "inline-block" }}>
-              <Button
-                onClick={() => handleSentimentAnalysis(params)}
-                disabled={isLoading || !hasValidHistory}
-                className={
-                  !hasValidHistory ? "opacity-50 cursor-not-allowed" : ""
-                }
+          return (
+            <Tooltip
+              title={justification || "No justification provided"}
+              placement="top"
+              arrow
+              sx={{ maxWidth: 500 }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                Analyze sentiment
-              </Button>
-            </span>
-          </Tooltip>
+                <Typography
+                  variant="body2"
+                  fontWeight="bold"
+                  sx={{ cursor: "help" }}
+                >
+                  {sentimentScore?.toFixed(0)}
+                </Typography>
+              </Box>
+            </Tooltip>
+          )
+        }
+
+        return (
+          <>
+            <Tooltip
+              title={
+                !hasValidHistory
+                  ? "There is no chat history for this conversation"
+                  : ""
+              }
+              placement="top"
+              arrow
+            >
+              <span style={{ display: "inline-block" }}>
+                <Button
+                  onClick={() => handleSentimentAnalysis(params)}
+                  disabled={isLoading || !hasValidHistory}
+                  className={
+                    !hasValidHistory ? "opacity-50 cursor-not-allowed" : ""
+                  }
+                >
+                  Analyze sentiment
+                </Button>
+              </span>
+            </Tooltip>
+
+            {/* Error message */}
+            <Snackbar
+              open={!!analysisError}
+              autoHideDuration={6000}
+              onClose={handleCloseError}
+              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+              <Alert
+                onClose={handleCloseError}
+                severity="error"
+                sx={{ width: "100%" }}
+              >
+                {analysisError}
+              </Alert>
+            </Snackbar>
+
+            {/* Success message */}
+            <Snackbar
+              open={showSuccessMessage}
+              autoHideDuration={3000}
+              onClose={handleCloseSuccess}
+              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+              <Alert
+                onClose={handleCloseSuccess}
+                severity="success"
+                sx={{ width: "100%" }}
+              >
+                Sentiment analysis completed successfully!
+              </Alert>
+            </Snackbar>
+          </>
         )
       },
     },
