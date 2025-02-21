@@ -91,7 +91,7 @@ export async function fetchChatbotMessages(
     const query = supabaseAdmin
       .from("chatbot")
       .select()
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
 
     if (Array.isArray(botIdFilter)) {
       query.in("typebot_id", botIdFilter)

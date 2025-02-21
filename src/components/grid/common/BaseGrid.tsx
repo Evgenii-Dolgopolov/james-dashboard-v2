@@ -193,7 +193,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
               },
             },
             pagination: {
-              paginationModel: { pageSize: 25, page: 0 },
+              paginationModel: { pageSize: 100, page: 0 },
             },
           }}
           pageSizeOptions={[10, 25, 50, 100]}
