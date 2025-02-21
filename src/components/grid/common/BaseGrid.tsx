@@ -1,5 +1,6 @@
 // src/components/grid/common/BaseGrid.tsx
 "use client"
+
 import React, { useState, useEffect } from "react"
 import { Box, Alert, AlertTitle } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
@@ -8,6 +9,7 @@ import { filterRowsByTime } from "@/utils/filters"
 import { LoadingState, ErrorState, EmptyState } from "./States"
 import { FilterContainer } from "../filters/FilterContainer"
 import { useSession } from "next-auth/react"
+import { useFilterContext } from "@/context/filter/FilterContext"
 import {
   fetchChatbotMessages,
   fetchBotNames,
@@ -30,8 +32,6 @@ type BaseGridState = {
   error: string | null
   rows: Message[]
   rowModesModel: Record<string, any>
-  timeFilter: string
-  selectedBotId: string
   botOptions: Bot[]
   threadFilter?: string
 }
@@ -42,8 +42,6 @@ const initialState: BaseGridState = {
   error: null,
   rows: [],
   rowModesModel: {},
-  timeFilter: "all",
-  selectedBotId: "all",
   botOptions: [],
   threadFilter: undefined,
 }
@@ -59,6 +57,9 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
     threadFilter,
   })
 
+  // Get filter state from context
+  const { timeFilter, selectedBotId } = useFilterContext()
+
   useEffect(() => {
     const loadBotOptions = async () => {
       if (status !== "authenticated" || !session?.user?.id) {
@@ -72,7 +73,6 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
           setState(prev => ({
             ...prev,
             botOptions: bots,
-            selectedBotId: "all", // Set to 'all' by default
           }))
         }
       } catch (err) {
@@ -90,10 +90,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
       }
       setState(prev => ({ ...prev, loading: true }))
       try {
-        const data = await fetchChatbotMessages(
-          session.user.id,
-          state.selectedBotId,
-        )
+        const data = await fetchChatbotMessages(session.user.id, selectedBotId)
         setState(prev => ({
           ...prev,
           messages: data,
@@ -110,7 +107,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
       }
     }
     loadMessages()
-  }, [session?.user?.id, status, state.selectedBotId])
+  }, [session?.user?.id, status, selectedBotId]) // Dependency on selectedBotId from context
 
   useEffect(() => {
     if (state.messages) {
@@ -123,19 +120,11 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
     }
   }, [state.messages, state.botOptions, formatMessages])
 
-  const handleTimeFilterChange = (newTimeFilter: string) => {
-    setState(prev => ({ ...prev, timeFilter: newTimeFilter }))
-  }
-
-  const handleBotChange = (newBotId: string) => {
-    setState(prev => ({ ...prev, selectedBotId: newBotId }))
-  }
-
   const handleRowModesModelChange = (newModel: Record<string, any>) => {
     setState(prev => ({ ...prev, rowModesModel: newModel }))
   }
 
-  const filteredRows = filterRowsByTime(state.rows, state.timeFilter)
+  const filteredRows = filterRowsByTime(state.rows, timeFilter)
 
   if (status === "loading" || state.loading) {
     return <LoadingState />
@@ -162,15 +151,9 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
       return (
         <>
           <Box sx={{ mb: 2 }}>
-            <FilterContainer
-              timeFilter={state.timeFilter}
-              selectedBotId={state.selectedBotId}
-              onTimeFilterChange={handleTimeFilterChange}
-              onBotChange={handleBotChange}
-              botOptions={state.botOptions}
-            />
+            <FilterContainer botOptions={state.botOptions} />
           </Box>
-          <EmptyState filtered={!!state.selectedBotId || !!threadFilter} />
+          <EmptyState filtered={!!selectedBotId || !!threadFilter} />
         </>
       )
     }
@@ -208,13 +191,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
                   width: "100%",
                 }}
               >
-                <FilterContainer
-                  timeFilter={state.timeFilter}
-                  selectedBotId={state.selectedBotId}
-                  onTimeFilterChange={handleTimeFilterChange}
-                  onBotChange={handleBotChange}
-                  botOptions={state.botOptions}
-                />
+                <FilterContainer botOptions={state.botOptions} />
                 <Toolbar />
               </Box>
             ),

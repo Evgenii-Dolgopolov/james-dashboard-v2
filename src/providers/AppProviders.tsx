@@ -6,6 +6,7 @@ import { NextAppProvider } from "@toolpad/core/nextjs"
 import { NAVIGATION } from "@/config/navigation"
 import { createTheme } from "@mui/material/styles"
 import { ChatbotProvider } from "./ChatbotProvider"
+import { FilterProvider } from "@/providers/FilterProvider"
 
 type AppProvidersProps = {
   children: ReactNode
@@ -31,7 +32,9 @@ export function AppProviders({ children }: AppProvidersProps) {
       branding={{ title: "", logo: "" }}
       theme={theme}
     >
-      <ChatbotProvider>{children}</ChatbotProvider>
+      <FilterProvider>
+        <ChatbotProvider>{children}</ChatbotProvider>
+      </FilterProvider>
     </NextAppProvider>
   )
 }
