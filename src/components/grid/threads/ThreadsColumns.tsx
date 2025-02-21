@@ -5,6 +5,7 @@ import { GridRenderCellParams, GridColDef } from "@mui/x-data-grid"
 import { Tooltip } from "@mui/material"
 import { analyzeSentiment } from "@/services/sentiment/analyze"
 import { useChatbotMessages } from "@/hooks/useChatbotMessages"
+import { useBotAssignments } from "@/hooks/useBotAssignments"
 import Button from "../common/Button"
 import type { Message } from "@/lib/supabase/queries"
 
@@ -19,6 +20,7 @@ type ThreadRow = Message & {
 export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
   const router = useRouter()
   const { messages } = useChatbotMessages()
+  const { hasMultipleBots } = useBotAssignments()
   const [loadingThreads, setLoadingThreads] = useState<Record<string, boolean>>(
     {},
   )
@@ -34,7 +36,6 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
     try {
       setLoadingThreads(prev => ({ ...prev, [threadId]: true }))
       const threadMessages = messages[threadId]
-
       if (
         !threadMessages ||
         !threadMessages.length ||
@@ -43,13 +44,11 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         setLoadingThreads(prev => ({ ...prev, [threadId]: false }))
         return
       }
-
       const { success } = await analyzeSentiment({
         threadId,
         messageHistory: threadMessages[0].chat_history,
         prompt: threadMessages[0].sentiment_analysis_prompt,
       })
-
       if (success) {
         window.location.reload()
       }
@@ -60,7 +59,8 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
     }
   }
 
-  return [
+  // Define all columns
+  const allColumns: GridColDef<ThreadRow>[] = [
     {
       field: "created_at",
       headerName: "Time",
@@ -129,26 +129,21 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         const toSeconds = (duration: string) => {
           try {
             if (!duration) return 0
-
             // Split into parts and reverse to handle both HH:MM:SS and MM:SS formats
             const parts = duration.split(":").reverse()
-
             // Convert all parts to numbers, defaulting to 0 for invalid values
             const [seconds, minutes, hours] = parts.map(part => {
               const num = parseInt(part, 10)
               return isNaN(num) ? 0 : num
             })
-
             return hours * 3600 + minutes * 60 + seconds
           } catch (error) {
             console.error("Error parsing duration:", error)
             return 0
           }
         }
-
         const seconds1 = toSeconds(v1)
         const seconds2 = toSeconds(v2)
-
         return seconds1 - seconds2
       },
       align: "right",
@@ -176,11 +171,9 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         if (isLoading) {
           return <div>Analyzing...</div>
         }
-
         if (hasSentiment) {
           return <div>{params.row.sentiment_analysis?.toFixed(0)}</div>
         }
-
         return (
           <Tooltip
             title={
@@ -207,4 +200,9 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
       },
     },
   ]
+
+  // Filter out the bot_name column if user only has one bot assigned
+  return allColumns.filter(
+    column => hasMultipleBots || column.field !== "bot_name",
+  )
 }

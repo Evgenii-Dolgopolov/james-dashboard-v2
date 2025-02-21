@@ -18,12 +18,8 @@ export const FilterContainer: React.FC<FilterContainerProps> = ({
   botOptions,
 }) => {
   // Use our filter context
-  const {
-    timeFilter,
-    selectedBotId,
-    setTimeFilter,
-    setBotFilter
-  } = useFilterContext()
+  const { timeFilter, selectedBotId, setTimeFilter, setBotFilter } =
+    useFilterContext()
 
   // Handle time filter change
   const handleTimeFilterChange = (value: string) => {

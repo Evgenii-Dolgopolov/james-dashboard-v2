@@ -58,8 +58,9 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
   })
 
   // Get filter state from context
-  const { timeFilter, selectedBotId } = useFilterContext()
+  const { timeFilter, selectedBotId, setBotFilter } = useFilterContext()
 
+  // Load bot options first, separately from messages
   useEffect(() => {
     const loadBotOptions = async () => {
       if (status !== "authenticated" || !session?.user?.id) {
@@ -68,20 +69,23 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
       }
       try {
         const bots = await fetchBotNames(session.user.id)
-        if (bots.length > 0) {
-          console.log("Loaded bot options:", bots)
-          setState(prev => ({
-            ...prev,
-            botOptions: bots,
-          }))
+        setState(prev => ({
+          ...prev,
+          botOptions: bots,
+        }))
+
+        // If there's only one bot, automatically select it
+        if (bots.length === 1 && selectedBotId === "all") {
+          setBotFilter(bots[0].bot_id)
         }
       } catch (err) {
         console.log("Error loading bot options:", err)
       }
     }
     loadBotOptions()
-  }, [session?.user?.id, status])
+  }, [session?.user?.id, status, selectedBotId, setBotFilter])
 
+  // Load messages after bot options are loaded
   useEffect(() => {
     const loadMessages = async () => {
       if (status !== "authenticated" || !session?.user?.id) {
@@ -107,7 +111,7 @@ export const BaseGrid: React.FC<BaseGridProps> = ({
       }
     }
     loadMessages()
-  }, [session?.user?.id, status, selectedBotId]) // Dependency on selectedBotId from context
+  }, [session?.user?.id, status, selectedBotId])
 
   useEffect(() => {
     if (state.messages) {
