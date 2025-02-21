@@ -72,8 +72,16 @@ export const BotFilter: React.FC<BotFilterProps> = ({
     assignedBotIds.includes(bot.bot_id),
   )
 
+  // Sort the filtered options alphabetically by bot_name
+  const sortedBotOptions = [...filteredBotOptions].sort((a, b) => {
+    // Use bot_name if available, otherwise fallback to bot_id
+    const nameA = (a.bot_name || a.bot_id).toLowerCase()
+    const nameB = (b.bot_name || b.bot_id).toLowerCase()
+    return nameA.localeCompare(nameB)
+  })
+
   // If we ended up with just one bot after filtering, don't show the dropdown
-  if (filteredBotOptions.length === 1) {
+  if (sortedBotOptions.length === 1) {
     return null
   }
 
@@ -83,10 +91,10 @@ export const BotFilter: React.FC<BotFilterProps> = ({
       value={selectedBotId}
       onChange={e => onBotChange(e.target.value)}
       sx={{ minWidth: 200 }}
-      disabled={filteredBotOptions.length === 0}
+      disabled={sortedBotOptions.length === 0}
     >
       <MenuItem value="all">All Assigned Bots</MenuItem>
-      {filteredBotOptions.map(bot => (
+      {sortedBotOptions.map(bot => (
         <MenuItem key={bot.bot_id} value={bot.bot_id}>
           {bot.bot_name || bot.bot_id}
         </MenuItem>
