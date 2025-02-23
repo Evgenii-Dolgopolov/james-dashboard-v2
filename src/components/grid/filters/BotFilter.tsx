@@ -26,7 +26,6 @@ export const BotFilter: React.FC<BotFilterProps> = ({
   const { data: session, status } = useSession()
   const assignedBotIds = session?.user?.botAssignments || []
 
-  // Handle single bot case with useEffect instead of during render
   useEffect(() => {
     // If we determine there's just one bot, make sure the selected bot is set correctly
     if (botOptions.length === 1 && selectedBotId !== botOptions[0].bot_id) {
@@ -37,6 +36,7 @@ export const BotFilter: React.FC<BotFilterProps> = ({
     const filteredOptions = botOptions.filter(bot =>
       assignedBotIds.includes(bot.bot_id),
     )
+
     if (
       selectedBotId !== "all" &&
       filteredOptions.length > 0 &&
@@ -67,34 +67,34 @@ export const BotFilter: React.FC<BotFilterProps> = ({
     )
   }
 
-  // Filter the bot options by the user's assignments
-  const filteredBotOptions = botOptions.filter(bot =>
+  // Filter and sort bot options
+  const filteredBots = botOptions.filter(bot =>
     assignedBotIds.includes(bot.bot_id),
   )
 
-  // Sort the filtered options alphabetically by bot_name
-  const sortedBotOptions = [...filteredBotOptions].sort((a, b) => {
-    // Use bot_name if available, otherwise fallback to bot_id
-    const nameA = (a.bot_name || a.bot_id).toLowerCase()
-    const nameB = (b.bot_name || b.bot_id).toLowerCase()
-    return nameA.localeCompare(nameB)
+  // Sort bots with trimmed names
+  const sortedBots = [...filteredBots].sort((a, b) => {
+    // Trim whitespace and convert to uppercase for consistent sorting
+    const aName = (a.bot_name || a.bot_id || "").trim().toUpperCase()
+    const bName = (b.bot_name || b.bot_id || "").trim().toUpperCase()
+
+    return aName.localeCompare(bName)
   })
 
   // If we ended up with just one bot after filtering, don't show the dropdown
-  if (sortedBotOptions.length === 1) {
+  if (sortedBots.length === 1) {
     return null
   }
 
-  // Only show the dropdown if we have more than one bot option
   return (
     <Select
       value={selectedBotId}
       onChange={e => onBotChange(e.target.value)}
       sx={{ minWidth: 200 }}
-      disabled={sortedBotOptions.length === 0}
+      disabled={sortedBots.length === 0}
     >
       <MenuItem value="all">All Assigned Bots</MenuItem>
-      {sortedBotOptions.map(bot => (
+      {sortedBots.map(bot => (
         <MenuItem key={bot.bot_id} value={bot.bot_id}>
           {bot.bot_name || bot.bot_id}
         </MenuItem>

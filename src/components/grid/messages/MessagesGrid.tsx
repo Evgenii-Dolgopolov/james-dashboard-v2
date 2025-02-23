@@ -13,21 +13,31 @@ export const MessagesGrid = () => {
   const threadFilter = searchParams.get("thread")
   const { hasSingleBot, singleBotName } = useBotAssignments()
 
+  // Added helper function to check if a message has content
+  const hasMessageContent = (message: Message): boolean => {
+    return !!(
+      message.user_message ||
+      message.suggested_question ||
+      message.bot_message ||
+      message.user_email
+    )
+  }
+
   const formatMessages = (
     messages: Record<string, Message[]>,
     botOptions: Bot[],
   ) => {
     let formattedMessages = Object.values(messages)
       .flat()
+      // Added filter to remove messages without content
+      .filter(hasMessageContent)
       .map((message: Message) => {
-        // If user has a single bot, use that bot's name
-        // Otherwise, find bot name from bot options
         let botName
         if (hasSingleBot) {
-          botName = singleBotName || message.bot_id // Use single bot name with fallback to ID
+          botName = singleBotName || message.bot_id
         } else {
           const bot = botOptions.find(b => b.bot_id === message.bot_id)
-          botName = bot?.bot_name || message.bot_id // Use bot name with fallback to ID
+          botName = bot?.bot_name || message.bot_id
         }
 
         return {

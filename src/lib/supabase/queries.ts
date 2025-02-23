@@ -69,7 +69,6 @@ export async function fetchBotNames(userId?: string): Promise<Bot[]> {
       .eq("user_id", userId)
 
     if (assignmentError || !assignments?.length) {
-      console.log("Error fetching bot assignments:", assignmentError)
       return []
     }
 
@@ -81,17 +80,15 @@ export async function fetchBotNames(userId?: string): Promise<Bot[]> {
       .in("bot_id", botIds)
 
     if (botsError) {
-      console.log("Error fetching bot names:", botsError)
       return []
     }
 
-    // Return the bot IDs and names
+    // Added trim() when mapping the data
     return bots.map(bot => ({
       bot_id: bot.bot_id,
-      bot_name: bot.bot_name || bot.bot_id, // Fallback to ID if name is missing
+      bot_name: bot.bot_name ? bot.bot_name.trim() : bot.bot_id,
     }))
   } catch (error) {
-    console.log("Error in fetchBotNames:", error)
     return []
   }
 }
