@@ -16,14 +16,12 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     setError("")
-
     try {
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       })
-
       if (result?.error) {
         setError(
           result.error === "CredentialsSignin"
@@ -35,7 +33,6 @@ export default function Login() {
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again later.")
-      console.error("Login error:", err)
     } finally {
       setLoading(false)
     }
@@ -50,7 +47,6 @@ export default function Login() {
             Enter your credentials to access the dashboard
           </p>
         </div>
-
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="email" className="block text-sm font-medium">
@@ -66,7 +62,6 @@ export default function Login() {
               autoComplete="email"
             />
           </div>
-
           <div className="space-y-2">
             <label htmlFor="password" className="block text-sm font-medium">
               Password
@@ -81,17 +76,16 @@ export default function Login() {
               autoComplete="current-password"
             />
           </div>
-
           {error && (
             <div className="rounded-md bg-red-50 p-3">
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
-
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-gray-900 px-4 py-2 text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+            // Changed from bg-gray-900 to bg-blue-600 and hover from bg-gray-800 to bg-blue-700
+            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">

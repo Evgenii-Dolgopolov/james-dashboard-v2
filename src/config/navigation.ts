@@ -23,8 +23,8 @@ const NAVIGATION: NavigationItem[] = [
     icon: React.createElement(MessageIcon),
   },
   {
-    segment: "dashboard/callback",
-    title: "Callback",
+    segment: "dashboard/callbacks",
+    title: "Callback View",
     icon: React.createElement(PhoneCallbackIcon),
   },
 ]

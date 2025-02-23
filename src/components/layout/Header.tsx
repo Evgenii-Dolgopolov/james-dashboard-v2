@@ -52,7 +52,7 @@ const Header: FC = () => {
               sx={{ mr: 2 }}
             ></IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              User Dashboard
+              b2bLEAD.ai
             </Typography>
 
             {/* <Button

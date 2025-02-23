@@ -4,7 +4,7 @@ export const PROTECTED_ROUTES = [
   "/dashboard",
   "/dashboard/messages",
   "/dashboard/threads",
-  "/dashboard/callback",
+  "/dashboard/callbacks",
 ] as const
 
 export type AuthErrorType = {
