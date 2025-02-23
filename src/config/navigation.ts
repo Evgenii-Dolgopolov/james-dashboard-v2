@@ -13,14 +13,14 @@ type NavigationItem = {
 
 const NAVIGATION: NavigationItem[] = [
   {
-    segment: "dashboard/messages",
-    title: "Message View",
-    icon: React.createElement(MessageIcon),
-  },
-  {
     segment: "dashboard/threads",
     title: "Thread View",
     icon: React.createElement(QuestionAnswerIcon),
+  },
+  {
+    segment: "dashboard/messages",
+    title: "Message View",
+    icon: React.createElement(MessageIcon),
   },
   {
     segment: "dashboard/callback",

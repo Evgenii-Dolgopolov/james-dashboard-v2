@@ -55,21 +55,21 @@ const Header: FC = () => {
               User Dashboard
             </Typography>
 
-            <Button
+            {/* <Button
               onClick={() => handleProtectedNavigation("/dashboard/messages")}
               color="inherit"
               disabled={status === "loading"} // Prevent clicks during session check
             >
               Dashboard
-            </Button>
+            </Button> */}
 
-            <Button
+            {/* <Button
               onClick={() => handleProtectedNavigation("/charts")}
               color="inherit"
               disabled={status === "loading"} // Prevent clicks during session check
             >
               Charts
-            </Button>
+            </Button> */}
 
             {!session ? (
               <Button onClick={() => router.push("/login")} color="inherit">

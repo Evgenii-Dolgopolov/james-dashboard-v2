@@ -23,7 +23,7 @@ export const middleware = auth(async (request: NextRequest) => {
 
   // Redirect authenticated users away from login page
   if (isAuthenticated && pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard/messages", request.url))
+    return NextResponse.redirect(new URL("/dashboard/threads", request.url))
   }
 
   // Check for bot access on dashboard routes

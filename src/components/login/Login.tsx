@@ -31,7 +31,7 @@ export default function Login() {
             : result.error,
         )
       } else {
-        router.push("/dashboard/messages")
+        router.push("/dashboard/threads")
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again later.")
