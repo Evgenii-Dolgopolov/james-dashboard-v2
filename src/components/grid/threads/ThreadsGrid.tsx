@@ -14,38 +14,41 @@ export const ThreadsGrid = () => {
     messages: Record<string, Message[]>,
     botOptions: Bot[],
   ) => {
-    return Object.entries(messages).map(([threadId, threadMessages]) => {
-      const firstMessage = threadMessages[0]
-      const totalMessages = threadMessages.length
-      const duration = calculateThreadDuration(threadMessages)
+    // Added filter to only include threads with more than one message
+    return Object.entries(messages)
+      .filter(([_, threadMessages]) => threadMessages.length > 1) // New filter
+      .map(([threadId, threadMessages]) => {
+        const firstMessage = threadMessages[0]
+        const totalMessages = threadMessages.length
+        const duration = calculateThreadDuration(threadMessages)
 
-      // If user has a single bot, use that bot's name
-      // Otherwise, find bot name from bot options
-      let botName
-      if (hasSingleBot) {
-        botName = singleBotName || firstMessage.bot_id // Use single bot name with fallback to ID
-      } else {
-        const bot = botOptions.find(b => b.bot_id === firstMessage.bot_id)
-        botName = bot?.bot_name || firstMessage.bot_id // Use bot name with fallback to ID
-      }
+        let botName
+        if (hasSingleBot) {
+          botName = singleBotName || firstMessage.bot_id
+        } else {
+          const bot = botOptions.find(b => b.bot_id === firstMessage.bot_id)
+          botName = bot?.bot_name || firstMessage.bot_id
+        }
 
-      // Get message with callback info
-      const messageWithCallback = threadMessages.find(
-        message =>
-          message.user_email !== null && message.user_email !== undefined,
-      )
+        // Get message with callback info
+        const messageWithCallback = threadMessages.find(
+          message =>
+            message.user_email !== null && message.user_email !== undefined,
+        )
 
-      return {
-        ...firstMessage,
-        created_at: formatDate(firstMessage.created_at),
-        bot_name: botName,
-        threadMessages,
-        duration: duration,
-        totalMessages: totalMessages,
-        sentiment: null,
-        user_email: messageWithCallback ? messageWithCallback.user_email : null,
-      }
-    })
+        return {
+          ...firstMessage,
+          created_at: formatDate(firstMessage.created_at),
+          bot_name: botName,
+          threadMessages,
+          duration: duration,
+          totalMessages: totalMessages,
+          sentiment: null,
+          user_email: messageWithCallback
+            ? messageWithCallback.user_email
+            : null,
+        }
+      })
   }
 
   return <BaseGrid columns={ThreadsColumns()} formatMessages={formatMessages} />
