@@ -13,7 +13,6 @@ export const MessagesGrid = () => {
   const threadFilter = searchParams.get("thread")
   const { hasSingleBot, singleBotName } = useBotAssignments()
 
-  // Added helper function to check if a message has content
   const hasMessageContent = (message: Message): boolean => {
     return !!(
       message.user_message ||
@@ -27,9 +26,14 @@ export const MessagesGrid = () => {
     messages: Record<string, Message[]>,
     botOptions: Bot[],
   ) => {
-    let formattedMessages = Object.values(messages)
-      .flat()
-      // Added filter to remove messages without content
+    let formattedMessages = Object.entries(messages)
+      .flatMap(([_, threadMessages]) => {
+        // Sort messages within thread chronologically (ascending)
+        return [...threadMessages].sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+        )
+      })
       .filter(hasMessageContent)
       .map((message: Message) => {
         let botName
