@@ -19,7 +19,7 @@ export const ThreadsGrid = () => {
       .filter(([_, threadMessages]) => threadMessages.length > 1) // New filter
       .map(([threadId, threadMessages]) => {
         const firstMessage = threadMessages[0]
-        const totalMessages = threadMessages.length
+        const totalMessages = threadMessages.length - 1
         const duration = calculateThreadDuration(threadMessages)
 
         let botName
