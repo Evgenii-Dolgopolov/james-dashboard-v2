@@ -26,9 +26,12 @@ export const CallbacksGrid = () => {
     const callbackThreads = Object.entries(messages).filter(
       ([_, threadMessages]) => threadMessages.some(hasCallbackInfo),
     )
-
+  
     let formattedMessages = callbackThreads
-      .flatMap(([_, threadMessages]) => threadMessages)
+      .flatMap(([_, threadMessages]) => {
+        // Reverse the order of messages within each thread
+        return threadMessages.reverse()
+      })
       .map((message: Message) => {
         let botName
         if (hasSingleBot) {
@@ -37,20 +40,20 @@ export const CallbacksGrid = () => {
           const bot = botOptions.find(b => b.bot_id === message.bot_id)
           botName = bot?.bot_name || message.bot_id
         }
-
+  
         return {
           ...message,
           created_at: formatDate(message.created_at),
           bot_name: botName,
         }
       })
-
+  
     if (threadFilter) {
       formattedMessages = formattedMessages.filter(
         message => message.thread_id === threadFilter,
       )
     }
-
+  
     return formattedMessages
   }
 
