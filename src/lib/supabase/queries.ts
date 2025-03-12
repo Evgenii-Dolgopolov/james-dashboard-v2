@@ -12,6 +12,10 @@ export type Message = {
   bot_message: string | null
   user_email: string | null
   suggested_question: string | null
+  user_name: string | null
+  user_phone: string | null
+  user_company: string | null
+  user_callback_message: string | null
   thread_duration?: string
   total_messages?: number
   sentiment_analysis?: number | null
