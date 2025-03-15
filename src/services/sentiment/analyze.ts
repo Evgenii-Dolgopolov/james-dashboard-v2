@@ -12,84 +12,99 @@ export type SentimentAnalysisResponse = {
   error?: string
 }
 
+const ERRORS = {
+  THREAD_ID_REQUIRED: "Thread ID is required",
+  MESSAGE_HISTORY_REQUIRED: "Message history is required",
+  PROMPT_REQUIRED: "Sentiment prompt is required",
+  API_ERROR: "Failed to analyze sentiment",
+  DATABASE_ERROR: "Failed to save sentiment data",
+}
+
+async function callGroqApi(messageHistory: string, prompt: string) {
+  return fetch("/api/groq", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messageHistory, prompt }),
+  })
+}
+
+async function updateSentimentDatabase(
+  threadId: string,
+  score: number | null,
+  justification?: string,
+) {
+  return fetch("/api/sentiment/update", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ threadId, score, justification }),
+  })
+}
+
+async function handleApiResponse(response: Response, errorMessage: string) {
+  if (!response.ok) {
+    const errorData = await response.json()
+    console.error("API Error Response:", errorData)
+    return {
+      score: null,
+      success: false,
+      error: errorData.error || errorMessage,
+    }
+  }
+  return null // No errors
+}
+
+function validateInput(
+  request: SentimentAnalysisRequest,
+): SentimentAnalysisResponse | null {
+  if (!request.threadId) {
+    return { score: null, success: false, error: ERRORS.THREAD_ID_REQUIRED }
+  }
+  if (!request.messageHistory) {
+    return {
+      score: null,
+      success: false,
+      error: ERRORS.MESSAGE_HISTORY_REQUIRED,
+    }
+  }
+  if (!request.prompt) {
+    return { score: null, success: false, error: ERRORS.PROMPT_REQUIRED }
+  }
+  return null // No errors
+}
+
 export async function analyzeSentiment({
   threadId,
   messageHistory,
   prompt,
 }: SentimentAnalysisRequest): Promise<SentimentAnalysisResponse> {
   try {
-    // Validate all required fields before sending
-    if (!threadId) {
-      return { score: null, success: false, error: "Thread ID is required" }
+    const validationError = validateInput({ threadId, messageHistory, prompt })
+    if (validationError) {
+      return validationError
     }
 
-    if (!messageHistory) {
-      return {
-        score: null,
-        success: false,
-        error: "Message history is required",
-      }
+    const analysisResponse = await callGroqApi(messageHistory, prompt)
+    const apiError = await handleApiResponse(analysisResponse, ERRORS.API_ERROR)
+    if (apiError) {
+      return apiError
     }
 
-    if (!prompt) {
-      return {
-        score: null,
-        success: false,
-        error: "Sentiment prompt is required",
-      }
-    }
+    const { score, justification } = await analysisResponse.json()
 
-    // Step 1: Get sentiment analysis from Groq API
-    const analysisResponse = await fetch("/api/groq", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messageHistory, prompt }),
-    })
-
-    if (!analysisResponse.ok) {
-      const errorData = await analysisResponse.json()
-      console.error("API Error Response:", errorData)
-      return {
-        score: null,
-        success: false,
-        error: errorData.error || "Failed to analyze sentiment",
-      }
-    }
-
-    // Parse the response which now includes both score and justification
-    const analysisData = await analysisResponse.json()
-    const { score, justification } = analysisData
-
-    // Step 2: Update the database via dedicated API
-
-    const updateResponse = await fetch("/api/sentiment/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        threadId,
-        score,
-        justification,
-      }),
-    })
-
-    if (!updateResponse.ok) {
-      const errorData = await updateResponse.json()
-      console.error("Database Update Error:", errorData)
-      return {
-        score,
-        justification,
-        success: false,
-        error: errorData.error || "Failed to save sentiment data",
-      }
-    }
-
-    const updateResult = await updateResponse.json()
-
-    return {
+    const updateResponse = await updateSentimentDatabase(
+      threadId,
       score,
       justification,
-      success: true,
+    )
+    const updateError = await handleApiResponse(
+      updateResponse,
+      ERRORS.DATABASE_ERROR,
+    )
+    if (updateError) {
+      return { ...updateError, score, justification }
     }
+
+    return { score, justification, success: true }
   } catch (error) {
     console.error("Exception in sentiment analysis:", error)
     return {
