@@ -5,7 +5,6 @@ import { supabaseAdmin } from "@/lib/supabase/client"
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    console.log("Update sentiment API received body:", body)
 
     const { threadId, score, justification } = body
 
@@ -33,11 +32,6 @@ export async function POST(request: Request) {
       .eq("thread_id", threadId)
       .limit(5)
 
-    console.log("Current database values:", {
-      error: beforeError?.message || null,
-      data: beforeData,
-    })
-
     // Update all records with matching thread_id
     const { data, error } = await supabaseAdmin
       .from("chatbot")
@@ -58,11 +52,6 @@ export async function POST(request: Request) {
       .select("thread_id, sentiment_analysis, sentiment_analysis_justification")
       .eq("thread_id", threadId)
       .limit(5)
-
-    console.log("Database values after update:", {
-      error: afterError?.message || null,
-      data: afterData,
-    })
 
     return NextResponse.json({
       success: true,

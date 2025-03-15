@@ -38,8 +38,6 @@ export async function fetchSentimentPrompt(
   }
 
   try {
-    console.log("Fetching sentiment prompt for bot ID:", botId)
-
     const { data, error } = await supabaseAdmin
       .from("client_table")
       .select("sentiment_analysis_prompt")
@@ -52,7 +50,7 @@ export async function fetchSentimentPrompt(
     }
 
     if (!data || !data.sentiment_analysis_prompt) {
-      console.log("No sentiment prompt found for bot ID:", botId)
+      console.error("No sentiment prompt found for bot ID:", botId)
       return null
     }
 
@@ -110,7 +108,7 @@ export async function fetchChatbotMessages(
       .eq("user_id", userId)
 
     if (assignmentError || !assignments?.length) {
-      console.log("Error fetching assignments:", assignmentError)
+      console.error("Error fetching assignments:", assignmentError)
       return {}
     }
 
@@ -137,7 +135,7 @@ export async function fetchChatbotMessages(
     const { data: messages, error: messagesError } = await query
 
     if (messagesError) {
-      console.log("Messages error:", messagesError)
+      console.error("Messages error:", messagesError)
       return {}
     }
 

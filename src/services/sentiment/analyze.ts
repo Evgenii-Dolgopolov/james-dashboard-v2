@@ -18,8 +18,6 @@ export async function analyzeSentiment({
   prompt,
 }: SentimentAnalysisRequest): Promise<SentimentAnalysisResponse> {
   try {
-    console.log("Starting sentiment analysis for thread:", threadId)
-
     // Validate all required fields before sending
     if (!threadId) {
       return { score: null, success: false, error: "Thread ID is required" }
@@ -42,7 +40,6 @@ export async function analyzeSentiment({
     }
 
     // Step 1: Get sentiment analysis from Groq API
-    console.log("Sending request to Groq API...")
     const analysisResponse = await fetch("/api/groq", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,10 +60,8 @@ export async function analyzeSentiment({
     const analysisData = await analysisResponse.json()
     const { score, justification } = analysisData
 
-    console.log("Received sentiment analysis:", { score, justification })
-
     // Step 2: Update the database via dedicated API
-    console.log("Updating database with sentiment data...")
+
     const updateResponse = await fetch("/api/sentiment/update", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -89,7 +84,6 @@ export async function analyzeSentiment({
     }
 
     const updateResult = await updateResponse.json()
-    console.log("Database update result:", updateResult)
 
     return {
       score,

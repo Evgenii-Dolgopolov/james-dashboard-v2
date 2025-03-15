@@ -61,7 +61,7 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         setAnalysisError(null)
 
         const threadMessages = messages[threadId]
-
+        console.log(threadMessages[0].chat_history)
         if (
           !threadMessages ||
           !threadMessages.length ||
@@ -85,20 +85,11 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
           return
         }
 
-        console.log("Sentiment analysis request data:", {
-          threadId,
-          botId,
-          hasHistory: !!threadMessages[0].chat_history,
-          promptFound: !!sentimentPrompt,
-        })
-
         const result = await analyzeSentiment({
           threadId,
           messageHistory: threadMessages[0].chat_history || "",
           prompt: sentimentPrompt,
         })
-
-        console.log("Sentiment analysis result:", result)
 
         if (result.success) {
           // Store the result locally to display immediately
