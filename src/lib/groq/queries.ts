@@ -12,11 +12,6 @@ export async function groqSentimentAnalysis(
   messageHistory: string,
   prompt: string,
 ) {
-  console.log("Starting Groq sentiment analysis with:", {
-    messageHistoryLength: messageHistory?.length || 0,
-    promptLength: prompt?.length || 0,
-  })
-
   if (!messageHistory || !prompt) {
     throw new Error(
       "Both message history and prompt are required for sentiment analysis",
@@ -45,7 +40,6 @@ export async function groqSentimentAnalysis(
       throw new Error("No response from Groq API")
     }
 
-    console.log("Groq raw result:", result)
     return result // Return the raw JSON string from the model
   } catch (error) {
     console.error("Error in groqSentimentAnalysis:", error)

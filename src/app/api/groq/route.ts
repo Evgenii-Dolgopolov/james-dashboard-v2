@@ -6,32 +6,17 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
 
-    console.log("API received body with keys:", Object.keys(body))
-    console.log("Prompt present:", !!body.prompt)
-    console.log("Message history present:", !!body.messageHistory)
-
     const { messageHistory, prompt } = body
 
     if (!messageHistory || !prompt) {
-      console.log("Missing required fields:", {
-        messageHistory: !!messageHistory,
-        messageHistoryLength: messageHistory?.length || 0,
-        prompt: !!prompt,
-        promptLength: prompt?.length || 0,
-      })
-
       return NextResponse.json(
         { error: "Message history and prompt are required" },
         { status: 400 },
       )
     }
 
-    console.log("Prompt first 50 chars:", prompt.substring(0, 50))
-    console.log("Message history length:", messageHistory.length)
-
     // Get the raw JSON string from Groq
     const resultJson = await groqSentimentAnalysis(messageHistory, prompt)
-    console.log("Groq API raw result:", resultJson)
 
     // Parse the JSON response from the LLM
     try {
@@ -49,8 +34,6 @@ export async function POST(request: Request) {
           throw new Error("Could not parse JSON from LLM response")
         }
       }
-
-      console.log("Parsed LLM response:", parsedResult)
 
       // Validate that we have the expected fields
       if (!parsedResult.score) {

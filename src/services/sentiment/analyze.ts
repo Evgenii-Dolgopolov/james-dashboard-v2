@@ -32,11 +32,12 @@ async function updateSentimentDatabase(
   threadId: string,
   score: number | null,
   justification?: string,
+  messageHistory?: string
 ) {
   return fetch("/api/sentiment/update", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ threadId, score, justification }),
+    body: JSON.stringify({ threadId, score, justification, messageHistory }),
   })
 }
 
@@ -96,6 +97,7 @@ export async function analyzeSentiment({
       threadId,
       score,
       justification,
+      messageHistory,
     )
     const updateError = await handleApiResponse(
       updateResponse,

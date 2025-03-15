@@ -32,14 +32,8 @@ export const authConfig: NextAuthConfig = {
           })
 
           if (authError || !user || !session) {
-            console.log("Supabase auth error:", authError)
             return null
           }
-
-          console.log(
-            "Auth successful. Getting bot assignments for user:",
-            user.id,
-          )
 
           // Get bot assignments using admin client
           const { data: assignments, error: assignmentError } =
@@ -49,11 +43,8 @@ export const authConfig: NextAuthConfig = {
               .eq("user_id", user.id)
 
           if (assignmentError) {
-            console.log("Failed to fetch bot assignments:", assignmentError)
             return null
           }
-
-          console.log("Found assignments:", assignments)
 
           const userData: UserData = {
             id: user.id,
@@ -71,7 +62,6 @@ export const authConfig: NextAuthConfig = {
 
           return userData
         } catch (error) {
-          console.log("Authorization error:", error)
           return null
         }
       },
@@ -80,12 +70,6 @@ export const authConfig: NextAuthConfig = {
 
   callbacks: {
     async jwt({ token, user }) {
-      console.log("JWT Callback:", {
-        hasUser: !!user,
-        hasToken: !!token,
-        accessToken: user?.access_token ? "present" : "missing",
-      })
-
       if (user) {
         token.access_token = user.access_token
         token.id = user.id
@@ -97,11 +81,6 @@ export const authConfig: NextAuthConfig = {
     },
 
     async session({ session, token }) {
-      console.log("Session Callback:", {
-        hasAccessToken: !!token?.access_token,
-        hasBotAssignments: token?.botAssignments?.length > 0,
-      })
-
       if (token && session.user) {
         if (token.access_token) {
           const {
@@ -113,9 +92,7 @@ export const authConfig: NextAuthConfig = {
           })
 
           if (error) {
-            console.log("Failed to set Supabase session:", error)
           } else {
-            console.log("Supabase session set successfully")
           }
         }
 

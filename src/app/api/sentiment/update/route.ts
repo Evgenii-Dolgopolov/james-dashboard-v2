@@ -6,7 +6,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
 
-    const { threadId, score, justification } = body
+    const { threadId, score, justification, messageHistory } = body
+    console.log("BODY:", messageHistory)
 
     if (!threadId || score === undefined || score === null) {
       return NextResponse.json(
@@ -25,37 +26,53 @@ export async function POST(request: Request) {
       )
     }
 
-    // Log the current values before update
-    const { data: beforeData, error: beforeError } = await supabaseAdmin
+    // Fetch all messages for the thread, sorted by date (ascending)
+    const { data: messages, error: fetchError } = await supabaseAdmin
       .from("chatbot")
-      .select("thread_id, sentiment_analysis, sentiment_analysis_justification")
+      .select("*")
       .eq("thread_id", threadId)
-      .limit(5)
+      .order("created_at", { ascending: true }) // Sort by date to get the first message
 
-    // Update all records with matching thread_id
-    const { data, error } = await supabaseAdmin
-      .from("chatbot")
-      .update({
-        sentiment_analysis: scoreNum,
-        sentiment_analysis_justification: justification || "",
-      })
-      .eq("thread_id", threadId)
-
-    if (error) {
-      console.error("Error updating sentiment in database:", error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+    if (fetchError) {
+      console.error("Error fetching messages for thread:", fetchError)
+      return NextResponse.json(
+        { error: "Failed to fetch messages for thread" },
+        { status: 500 },
+      )
     }
 
-    // Verify the update was successful
-    const { data: afterData, error: afterError } = await supabaseAdmin
-      .from("chatbot")
-      .select("thread_id, sentiment_analysis, sentiment_analysis_justification")
-      .eq("thread_id", threadId)
-      .limit(5)
+    if (!messages || messages.length === 0) {
+      return NextResponse.json(
+        { error: "No messages found for the thread" },
+        { status: 404 },
+      )
+    }
 
+    // Get the first message (index 0)
+    const firstMessage = messages[0]
+
+    // Update the first message with sentiment analysis and chat history
+    const { data: updatedMessage, error: updateError } = await supabaseAdmin
+      .from("chatbot")
+      .update({
+        sentiment_analysis: scoreNum, // Save sentiment score
+        sentiment_analysis_justification: justification || "", // Save justification
+        chat_history: messageHistory || "", // Save chat history in the first message
+      })
+      .eq("id", firstMessage.id) // Update only the first message
+
+    if (updateError) {
+      console.error("Error updating first message in database:", updateError)
+      return NextResponse.json(
+        { error: "Failed to update first message" },
+        { status: 500 },
+      )
+    }
+
+    // Return success response
     return NextResponse.json({
       success: true,
-      updated: afterData,
+      updated: updatedMessage,
     })
   } catch (error) {
     console.error("Error in update sentiment API:", error)
