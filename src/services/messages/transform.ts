@@ -1,7 +1,7 @@
 // src/services/messages/transform.ts
 import { Message } from "@/lib/supabase/queries"
 
-export function transformMessages(data: any[]): Message[] {
+export function transformMessages(data: Message[]): Message[] {
   return data.map(message => ({
     id: message.id,
     created_at: message.created_at,
@@ -10,7 +10,7 @@ export function transformMessages(data: any[]): Message[] {
     user_message: message.user_message,
     bot_message: message.bot_message,
     user_email: message.user_email,
-    suggested_question: message.suggested_message,
+    suggested_message: message.suggested_message,
     sentiment_analysis: message.sentiment_analysis,
     sentiment_analysis_justification: message.sentiment_analysis_justification,
     sentiment_analysis_prompt: message.sentiment_analysis_prompt,

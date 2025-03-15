@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit" />
+    <list default="true" id="75415b62-89c7-4088-8a9c-87de716d6c5d" name="Changes" comment="feat(CreateUser): add buttons: Back, Clear, Submit">
+      <change beforePath="$PROJECT_DIR$/src/components/grid/callback/CallbackGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/callback/CallbackGrid.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/messages/MessagesColumns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/messages/MessagesColumns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/messages/MessagesGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/messages/MessagesGrid.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/grid/threads/ThreadsColumns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/grid/threads/ThreadsColumns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/messages/transform.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/messages/transform.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -57,7 +64,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "prettierjs.PrettierConfiguration.Package": "/Users/edol/web-dev/work-projects/random-dashboard/node_modules/prettier",
-    "settings.editor.selected.configurable": "editor.preferences.folding",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie",
     "ts.external.directory.path": "/Users/edol/web-dev/work-projects/b2blead-analytics-dashboard/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -106,6 +113,7 @@
       <workItem from="1740028304875" duration="28000" />
       <workItem from="1740300035650" duration="21000" />
       <workItem from="1742011475414" duration="119000" />
+      <workItem from="1742014063864" duration="364000" />
     </task>
     <task id="LOCAL-00001" summary="feat(ui): add dropdown, calendar, checkbox, inputs">
       <option name="closed" value="true" />

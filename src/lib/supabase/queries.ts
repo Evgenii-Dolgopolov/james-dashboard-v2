@@ -6,16 +6,17 @@ import { transformMessages } from "@/services/messages/transform"
 export type Message = {
   id: string
   created_at: string
-  bot_id: string
+  bot_id?: string
+  typebot_id?: string
   thread_id: string
-  user_message: string | null
-  bot_message: string | null
-  user_email: string | null
-  suggested_question: string | null
-  user_name: string | null
-  user_phone: string | null
-  user_company: string | null
-  user_callback_message: string | null
+  user_message?: string | null
+  bot_message?: string | null
+  user_email?: string | null
+  suggested_message?: string | null
+  user_name?: string | null
+  user_phone?: string | null
+  user_company?: string | null
+  user_callback_message?: string | null
   thread_duration?: string
   total_messages?: number
   sentiment_analysis?: number | null

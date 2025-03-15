@@ -16,7 +16,7 @@ export const MessagesGrid = () => {
   const hasMessageContent = (message: Message): boolean => {
     return !!(
       message.user_message ||
-      message.suggested_question ||
+      message.suggested_message ||
       message.bot_message ||
       message.user_email
     )

@@ -36,8 +36,8 @@ export const MessagesColumns = () => {
       editable: false,
     },
     {
-      field: "suggested_question",
-      headerName: "Suggested Question",
+      field: "suggested_message",
+      headerName: "Suggested Message",
       flex: 1,
       minWidth: 150,
       editable: false,

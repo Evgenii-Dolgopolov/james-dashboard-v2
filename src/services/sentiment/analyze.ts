@@ -76,6 +76,7 @@ export async function analyzeSentiment({
   threadId,
   messageHistory,
   prompt,
+  
 }: SentimentAnalysisRequest): Promise<SentimentAnalysisResponse> {
   try {
     const validationError = validateInput({ threadId, messageHistory, prompt })

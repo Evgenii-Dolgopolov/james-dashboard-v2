@@ -61,11 +61,16 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
         setAnalysisError(null)
 
         const threadMessages = messages[threadId]
-        console.log(threadMessages[0].chat_history)
+
+        let threadChatHistory = threadMessages
+          .map(item => item.chat_history) // Extract chat_history
+          .filter(Boolean) // Remove null or empty values
+          .join("\n") // Join into a single string with line breaks
+
         if (
           !threadMessages ||
           !threadMessages.length ||
-          !isValidChatHistory(threadMessages[0].chat_history)
+          !isValidChatHistory(threadChatHistory)
         ) {
           console.error("Missing valid chat history for thread:", threadId)
           setAnalysisError("No valid chat history found for this thread")
@@ -87,9 +92,11 @@ export const ThreadsColumns = (): GridColDef<ThreadRow>[] => {
 
         const result = await analyzeSentiment({
           threadId,
-          messageHistory: threadMessages[0].chat_history || "",
+          messageHistory: threadChatHistory || "",
           prompt: sentimentPrompt,
         })
+
+        console.log(result)
 
         if (result.success) {
           // Store the result locally to display immediately
