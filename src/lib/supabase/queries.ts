@@ -30,6 +30,44 @@ export type Bot = {
   bot_id: string
 }
 
+// New function to get sentiment from first message of thread
+export async function getThreadSentimentFromFirstMessage(
+  threadId: string,
+): Promise<{
+  sentiment_analysis: number | null
+  sentiment_analysis_justification: string | null
+}> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("chatbot")
+      .select("sentiment_analysis, sentiment_analysis_justification")
+      .eq("thread_id", threadId)
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .single()
+
+    if (error || !data) {
+      console.error("Error fetching first message sentiment:", error)
+      return {
+        sentiment_analysis: null,
+        sentiment_analysis_justification: null,
+      }
+    }
+
+    return {
+      sentiment_analysis: data.sentiment_analysis,
+      sentiment_analysis_justification: data.sentiment_analysis_justification,
+    }
+  } catch (error) {
+    console.error("Exception in getThreadSentimentFromFirstMessage:", error)
+    return {
+      sentiment_analysis: null,
+      sentiment_analysis_justification: null,
+    }
+  }
+}
+
+// Existing functions below remain unchanged
 export async function fetchSentimentPrompt(
   botId: string,
 ): Promise<string | null> {
@@ -65,7 +103,6 @@ export async function fetchSentimentPrompt(
 export async function fetchBotNames(userId?: string): Promise<Bot[]> {
   if (!userId) return []
   try {
-    // First get the bot IDs from user assignments
     const { data: assignments, error: assignmentError } = await supabaseAdmin
       .from("user_bot_assignments")
       .select("bot_id")
@@ -75,7 +112,6 @@ export async function fetchBotNames(userId?: string): Promise<Bot[]> {
       return []
     }
 
-    // Get bot names from client_table for the assigned bot IDs
     const botIds = assignments.map(assignment => assignment.bot_id)
     const { data: bots, error: botsError } = await supabaseAdmin
       .from("client_table")
@@ -86,7 +122,6 @@ export async function fetchBotNames(userId?: string): Promise<Bot[]> {
       return []
     }
 
-    // Added trim() when mapping the data
     return bots.map(bot => ({
       bot_id: bot.bot_id,
       bot_name: bot.bot_name ? bot.bot_name.trim() : bot.bot_id,
@@ -102,7 +137,6 @@ export async function fetchChatbotMessages(
 ): Promise<Record<string, Message[]>> {
   if (!userId) return {}
   try {
-    // Get bot assignments for the user
     const { data: assignments, error: assignmentError } = await supabaseAdmin
       .from("user_bot_assignments")
       .select("bot_id")
@@ -114,14 +148,11 @@ export async function fetchChatbotMessages(
     }
 
     const botIds = assignments.map(assignment => assignment.bot_id)
-
-    // If a specific bot is selected and valid, filter for it
     const botIdFilter =
       selectedBotId && selectedBotId !== "all" && botIds.includes(selectedBotId)
         ? selectedBotId
         : botIds
 
-    // Query for messages, handling both single bot and multiple bot cases
     const query = supabaseAdmin
       .from("chatbot")
       .select()
