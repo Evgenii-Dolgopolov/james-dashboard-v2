@@ -7,7 +7,6 @@ export async function POST(request: Request) {
     const body = await request.json()
 
     const { threadId, score, justification, messageHistory } = body
-    console.log("BODY:", messageHistory)
 
     if (!threadId || score === undefined || score === null) {
       return NextResponse.json(
@@ -57,10 +56,10 @@ export async function POST(request: Request) {
       .update({
         sentiment_analysis: scoreNum, // Save sentiment score
         sentiment_analysis_justification: justification || "", // Save justification
-        chat_history: messageHistory || "", // Save chat history in the first message
+        complete_chat_history: messageHistory || "", // Save chat history in the first message
       })
       .eq("id", firstMessage.id) // Update only the first message
-
+      console.log("UPDATED MESSAGE =>", updatedMessage)
     if (updateError) {
       console.error("Error updating first message in database:", updateError)
       return NextResponse.json(
